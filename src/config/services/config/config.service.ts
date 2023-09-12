@@ -1,0 +1,23 @@
+import { Injectable, Logger } from '@nestjs/common';
+import { DotenvConfigOutput, DotenvParseOutput, config } from 'dotenv';
+
+@Injectable()
+export class ConfigService {
+  private config: DotenvParseOutput;
+
+  private readonly logger = new Logger(ConfigService.name);
+
+  constructor() {
+    const result: DotenvConfigOutput = config();
+    if (result.error) {
+      this.logger.error('[ConfigService] Failed to read .env file');
+    } else {
+      this.logger.log('[ConfigService] Successfully loaded .env config file');
+      this.config = result.parsed as DotenvParseOutput;
+    }
+  }
+
+  get(key: string): string {
+    return this.config[key];
+  }
+}
