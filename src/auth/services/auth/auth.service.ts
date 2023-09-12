@@ -10,6 +10,7 @@ import { UsersService } from '../../../users/services/users/users.service';
 import CreateUserDto from '../../../users/dto/create-user.dto';
 import SignUserDto from '../../../auth/dto/sign-user.dto';
 import { BcryptService } from 'src/bcrypt/services/bcrypt/bcrypt.service';
+import { I18nContext, I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private bcryptService: BcryptService,
+    private readonly i18n: I18nService,
   ) {}
 
   async validateUser({
@@ -36,7 +38,7 @@ export class AuthService {
     return null;
   }
 
-  async login(loginDto: LoginUserDto) {
+  async login(loginDto: LoginUserDto): Promise<string> {
     const signPayload = await this.validateUser({
       email: loginDto.email,
       password: loginDto.password,
@@ -45,17 +47,17 @@ export class AuthService {
     if (!signPayload) {
       this.logger.error(`Invalid credentials for user ${loginDto.email}`);
       throw new UnauthorizedException({
-        message: 'Incorrect credentials',
+        message: this.i18n.t('messages.incorrect_creds', {
+          lang: I18nContext.current().lang,
+        }),
       });
     }
 
-    return {
-      access_token: this.jwtService.sign({
-        id: signPayload.id,
-        email: signPayload.email,
-        name: signPayload.name,
-      }),
-    };
+    return this.jwtService.sign({
+      id: signPayload.id,
+      email: signPayload.email,
+      name: signPayload.name,
+    });
   }
 
   async register(regDto: CreateUserDto): Promise<number> {
@@ -64,7 +66,9 @@ export class AuthService {
     if (user) {
       this.logger.error(`User with email ${regDto.email} does already exist`);
       throw new BadRequestException({
-        message: 'User with this email does already exist',
+        message: this.i18n.t('messages.email_exists', {
+          lang: I18nContext.current().lang,
+        }),
       });
     }
 

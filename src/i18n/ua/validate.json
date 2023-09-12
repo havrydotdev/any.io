@@ -1,0 +1,7 @@
+{
+  "isEmail": "Пошта має бути дійсною",
+  "isNotEmpty": "{property} має бути не пустим",
+  "isString": "{property} має бути строкою",
+  "minLength": "{property} має складатися більше ніж з {len} символів",
+  "maxLength": "{property} має складатися менше ніж з {len} символів"
+}

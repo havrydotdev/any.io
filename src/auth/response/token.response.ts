@@ -6,4 +6,10 @@ export default class TokenResponse {
     nullable: false,
   })
   access_token: string;
+
+  @ApiProperty({
+    type: 'boolean',
+    nullable: false,
+  })
+  ok: boolean;
 }

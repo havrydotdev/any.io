@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Req,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import LoginUserDto from '../../../auth/dto/login-user.dto';
 import { AuthService } from '../../../auth/services/auth/auth.service';
 import SignUserDto from '../../../auth/dto/sign-user.dto';
@@ -35,24 +27,25 @@ import GetProfileResp from 'src/auth/response/profile.response';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @ApiOkResponse({ type: () => TokenResponse, description: 'User logged in' })
+  @Public()
+  @Post('login')
   @ApiUnauthorizedResponse({
     type: () => ErrorResponse,
     description: 'Incorrect user`s credentials',
   })
-  @HttpCode(HttpStatus.OK)
-  @Public()
-  @Post('login')
+  @ApiOkResponse({ type: () => TokenResponse, description: 'User logged in' })
   async login(@Body() reqBody: LoginUserDto): Promise<TokenResponse> {
     const token = await this.authService.login(reqBody);
 
-    return token;
+    return {
+      access_token: token,
+      ok: true,
+    };
   }
 
-  @ApiOkResponse({ type: () => RegisterResp, description: 'User registered' })
-  @HttpCode(HttpStatus.OK)
   @Public()
   @Post('register')
+  @ApiOkResponse({ type: () => RegisterResp, description: 'User registered' })
   async register(@Body() reqBody: CreateUserDto): Promise<RegisterResp> {
     const userId = await this.authService.register(reqBody);
 
@@ -62,17 +55,17 @@ export class AuthController {
     };
   }
 
+  @Get('profile')
   @ApiBearerAuth()
   @ApiHeader({
     name: 'Authorization',
     description: 'JWT token from login endpoint',
   })
-  @ApiOkResponse({ type: () => SignUserDto, description: 'User exist' })
   @ApiUnauthorizedResponse({
     type: () => ErrorResponse,
     description: 'User isn`t authorized',
   })
-  @Get('profile')
+  @ApiOkResponse({ type: () => SignUserDto, description: 'User exist' })
   getProfile(@Req() req: FastifyRequest): GetProfileResp {
     return {
       user: req.user,

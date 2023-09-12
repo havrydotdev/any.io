@@ -10,9 +10,9 @@ export class ConfigService {
   constructor() {
     const result: DotenvConfigOutput = config();
     if (result.error) {
-      this.logger.error('[ConfigService] Failed to read .env file');
+      this.logger.error('Failed to read .env file');
     } else {
-      this.logger.log('[ConfigService] Successfully loaded .env config file');
+      this.logger.log('Successfully loaded .env config file');
       this.config = result.parsed as DotenvParseOutput;
     }
   }

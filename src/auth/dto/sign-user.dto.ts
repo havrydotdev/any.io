@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export default class SignUserDto {
   @ApiProperty({
@@ -8,8 +7,6 @@ export default class SignUserDto {
     nullable: false,
     example: 1,
   })
-  @IsNumber()
-  @IsNotEmpty()
   id: number;
 
   @ApiProperty({
@@ -18,8 +15,6 @@ export default class SignUserDto {
     nullable: false,
     example: 'example@gmail.com',
   })
-  @IsString()
-  @IsNotEmpty()
   email: string;
 
   @ApiProperty({
@@ -28,7 +23,5 @@ export default class SignUserDto {
     nullable: false,
     example: 'Wade Allen',
   })
-  @IsString()
-  @IsNotEmpty()
   name: string;
 }
