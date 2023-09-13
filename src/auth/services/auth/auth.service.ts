@@ -9,8 +9,8 @@ import LoginUserDto from '../../../auth/dto/login-user.dto';
 import { UsersService } from '../../../users/services/users/users.service';
 import CreateUserDto from '../../../users/dto/create-user.dto';
 import SignUserDto from '../../../auth/dto/sign-user.dto';
-import { BcryptService } from 'src/bcrypt/services/bcrypt/bcrypt.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
+import IHashingService from 'src/hashing/interfaces/hashing-service.interface';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +18,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private bcryptService: BcryptService,
+    private hashingService: IHashingService,
     private readonly i18n: I18nService,
   ) {}
 
@@ -27,7 +27,7 @@ export class AuthService {
     password,
   }: LoginUserDto): Promise<SignUserDto | null> {
     const user = await this.usersService.findOne(email);
-    if (user && this.bcryptService.comparePasswords(password, user.password)) {
+    if (user && this.hashingService.comparePasswords(password, user.password)) {
       return {
         id: user.id,
         email: user.email,
@@ -61,7 +61,6 @@ export class AuthService {
   }
 
   async register(regDto: CreateUserDto): Promise<number> {
-    regDto.password = this.bcryptService.encodePassword(regDto.password);
     const user = await this.usersService.findOne(regDto.email);
     if (user) {
       this.logger.error(`User with email ${regDto.email} does already exist`);
@@ -71,6 +70,7 @@ export class AuthService {
         }),
       });
     }
+    regDto.password = this.hashingService.encodePassword(regDto.password);
 
     return this.usersService.create(regDto);
   }

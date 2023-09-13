@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from './config/config.module';
 import { CoreModule } from './core/core.module';
-import { BcryptModule } from './bcrypt/bcrypt.module';
+import { HashingModule } from './hashing/hashing.module';
 import {
   AcceptLanguageResolver,
   HeaderResolver,
@@ -17,11 +16,21 @@ import { ConfigService } from './config/services/config/config.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: './dev.sqlite',
-      entities: [User],
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      useFactory(config: ConfigService) {
+        return {
+          type: config.get('DB_TYPE') as 'mysql' | 'postgres' | 'sqlite',
+          database: config.get('DB_NAME'),
+          username: config.get('DB_USERNAME'),
+          logging: config.get('DB_LOGGING') === 'true',
+          port: parseInt(config.get('DB_PORT')),
+          host: config.get('DB_HOST'),
+          password: config.get('DB_PASSWORD'),
+          synchronize: config.get('DB_SYNCHRONIZE') === 'true',
+          entities: [__dirname + '/../*.entity{.ts,.js}'],
+        };
+      },
+      inject: [ConfigService],
     }),
     I18nModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
@@ -43,7 +52,7 @@ import { ConfigService } from './config/services/config/config.service';
     UsersModule,
     ConfigModule,
     CoreModule,
-    BcryptModule,
+    HashingModule,
   ],
 })
 export class AppModule {}

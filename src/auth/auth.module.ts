@@ -9,7 +9,9 @@ import { UsersService } from '../users/services/users/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { ConfigService } from 'src/config/services/config/config.service';
-import { BcryptModule } from 'src/bcrypt/bcrypt.module';
+import { HashingModule } from 'src/hashing/hashing.module';
+import IHashingService from 'src/hashing/interfaces/hashing-service.interface';
+import { BcryptService } from 'src/hashing/services/bcrypt/bcrypt.service';
 
 @Module({
   imports: [
@@ -23,9 +25,14 @@ import { BcryptModule } from 'src/bcrypt/bcrypt.module';
     }),
     UsersModule,
     PassportModule,
-    BcryptModule,
+    HashingModule,
   ],
-  providers: [AuthService, JwtStrategy, UsersService],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    UsersService,
+    { provide: IHashingService, useClass: BcryptService },
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}

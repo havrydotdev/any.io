@@ -5,4 +5,4 @@ import { BcryptService } from './services/bcrypt/bcrypt.service';
   exports: [BcryptService],
   providers: [BcryptService],
 })
-export class BcryptModule {}
+export class HashingModule {}
