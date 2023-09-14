@@ -8,16 +8,18 @@ import { I18nValidationExceptionFilter } from './common/filters/i18n-validation-
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ConfigService } from './config/services/config/config.service';
 
+const filters = [
+  new HttpExceptionFilter(),
+  new I18nValidationExceptionFilter(),
+];
+
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
   );
 
-  app.useGlobalFilters(
-    new HttpExceptionFilter(),
-    new I18nValidationExceptionFilter(),
-  );
+  app.useGlobalFilters(...filters);
 
   const config = app.get<ConfigService>(ConfigService);
 

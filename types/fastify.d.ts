@@ -3,11 +3,11 @@ import { FastifyRequest } from 'fastify';
 
 declare module 'fastify' {
   interface FastifyRequest {
-    user: CustomUser;
+    user: UserInfo;
   }
 }
 
-interface CustomUser {
+interface UserInfo {
   id: number;
   email: string;
   name: string;

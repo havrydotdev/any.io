@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import Review from 'src/reviews/entities/review.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -57,4 +58,7 @@ export class User {
     default: 0,
   })
   balance: number;
+
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
 }

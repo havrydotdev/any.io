@@ -1,6 +1,6 @@
-import { CustomUser } from 'types/fastify';
+import { UserInfo } from 'types/fastify';
 
 export default class GetProfileResp {
-  user: CustomUser;
+  user: UserInfo;
   ok: boolean;
 }
