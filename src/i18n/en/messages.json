@@ -1,5 +1,7 @@
 {
-  "401": "",
+  "401": "You're unauthorized",
+  "400": "Bad request",
   "incorrect_creds": "Incorrect credentials",
-  "email_exists": "User with this email does already exist"
+  "email_exists": "User with this email does already exist",
+  "no_rows_updated": "This entity does not exist or unknown error occured"
 }

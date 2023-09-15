@@ -12,7 +12,7 @@ const typeOrmConfig: TypeOrmModuleAsyncOptions = {
       host: config.get('DB_HOST'),
       password: config.get('DB_PASSWORD'),
       synchronize: config.get('DB_SYNCHRONIZE') === 'true',
-      entities: [__dirname + '/../*.entity{.ts,.js}'],
+      entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
     };
   },
   inject: [ConfigService],

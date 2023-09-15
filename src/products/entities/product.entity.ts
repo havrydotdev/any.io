@@ -19,8 +19,13 @@ export default class Product {
   @Column()
   description: string;
 
-  @Column({ type: 'array' })
-  tags: string[];
+  @Column({
+    nullable: false,
+  })
+  price: number;
+
+  // @Column({ type: 'array' })
+  // tags: string[];
 
   @ManyToOne(() => Company, (company) => company.products)
   company: Company;

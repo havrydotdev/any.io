@@ -13,6 +13,11 @@ export class UsersService {
       where: {
         email: email,
       },
+      select: {
+        password: true,
+        email: true,
+        name: true,
+      },
     });
   }
 

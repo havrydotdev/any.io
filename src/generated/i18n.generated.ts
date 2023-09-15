@@ -3,9 +3,11 @@
 import { Path } from "nestjs-i18n";
 export type I18nTranslations = {
     "messages": {
+        "400": string;
         "401": string;
         "incorrect_creds": string;
         "email_exists": string;
+        "no_rows_updated": string;
     };
     "validate": {
         "isEmail": string;

@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
+import Company from 'src/companies/entities/company.entity';
 import Review from 'src/reviews/entities/review.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -44,6 +51,7 @@ export class User {
   })
   @Column({
     nullable: false,
+    select: false,
   })
   password: string;
 
@@ -61,4 +69,9 @@ export class User {
 
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
+
+  @OneToOne(() => Company, (company) => company.user, {
+    nullable: true,
+  })
+  company: Company;
 }
