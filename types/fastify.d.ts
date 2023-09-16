@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FastifyRequest } from 'fastify';
+import { Role } from 'src/common/enums/roles.enum';
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -11,4 +12,5 @@ interface UserInfo {
   id: number;
   email: string;
   name: string;
+  role: Role;
 }
