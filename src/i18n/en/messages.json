@@ -3,5 +3,9 @@
   "400": "Bad request",
   "incorrect_creds": "Incorrect credentials",
   "email_exists": "User with this email does already exist",
-  "no_rows_updated": "This entity does not exist or unknown error occured"
+  "no_rows_updated": "This entity does not exist or unknown error occured",
+  "user_does_not_own_company": "You does not own this company, so you can't update it's products",
+  "user_company_is_null": "You don't have your own company, so you can't create products",
+  "invalid_order_by": "Invalid field to order by",
+  "invalid_order_by_type": "Invalid order by direction"
 }

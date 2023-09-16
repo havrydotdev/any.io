@@ -2,6 +2,7 @@
   "isEmail": "Email is invalid",
   "isNotEmpty": "Property {property} must not be empty",
   "isString": "Property {property} must be string",
+  "isNumber": "{property} must be number",
   "minLength": "Property {property} must contain more than {constraints.0} symbols",
   "maxLength": "Property {property} must contain less than {constraints.0} symbols"
 }

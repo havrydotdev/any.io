@@ -50,6 +50,16 @@ export class CompaniesService {
     return company;
   }
 
+  async findByUserId(userId: number): Promise<Company> {
+    const company = await this.companiesRepo.findOneBy({
+      user: {
+        id: userId,
+      },
+    });
+
+    return company;
+  }
+
   async update(
     companyId: number,
     updateDto: UpdateCompanyDto,

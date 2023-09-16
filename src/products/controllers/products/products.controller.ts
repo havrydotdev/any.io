@@ -1,24 +1,57 @@
-import { Controller } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  ParseIntPipe,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common';
+import { FastifyRequest } from 'fastify';
+import OrderByTypePipe from 'src/common/pipes/order-by-type.pipe';
+import OrderByPipe from 'src/common/pipes/order-by.pipe';
+import CreateProductDto from 'src/products/dtos/create-product.dto';
+import {
+  OrderByFields,
+  OrderByTypes,
+} from 'src/products/dtos/find-all-query.dto';
+import Product from 'src/products/entities/product.entity';
+import CreateProductResponse from 'src/products/responses/create-product.response';
 import { ProductsService } from 'src/products/services/products/products.service';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  //   @Get()
-  //   async findAll(
-  //     @Query('orderBy') orderBy: string,
-  //     @Query('orderByType') orderByType: string,
-  //     @Query('limit', ParseIntPipe) limit: number,
-  //     @Query('page', ParseIntPipe) page: number,
-  //   ): Promise<Product[]> {
-  //     if (
-  //       !(orderBy in ['id', 'title', 'price']) ||
-  //       !(orderByType in ['desc', 'asc'])
-  //     ) {
-  //       throw new BadRequestException();
-  //     }
+  @Get()
+  async findAll(
+    @Query('order_by_type', OrderByTypePipe) orderByType: OrderByTypes,
+    @Query('order_by', OrderByPipe) orderBy: OrderByFields,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit: number,
+    @Query('page', new ParseIntPipe({ optional: true })) page: number,
+    @Query('min_price', new ParseIntPipe({ optional: true })) minPrice: number,
+    @Query('max_price', new ParseIntPipe({ optional: true })) maxPrice: number,
+  ): Promise<Product[]> {
+    return this.productsService.findAll({
+      orderByType,
+      orderBy,
+      limit,
+      page,
+      minPrice,
+      maxPrice,
+    });
+  }
 
-  //     return this.productsService.findAll(orderBy, orderByType, limit, page);
-  //   }
+  @Post()
+  async create(
+    @Req() req: FastifyRequest,
+    @Body() createDto: CreateProductDto,
+  ): Promise<CreateProductResponse> {
+    const productId = await this.productsService.create(req.user.id, createDto);
+
+    return {
+      ok: true,
+      product_id: productId,
+    };
+  }
 }

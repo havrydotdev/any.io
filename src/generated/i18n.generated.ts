@@ -8,11 +8,16 @@ export type I18nTranslations = {
         "incorrect_creds": string;
         "email_exists": string;
         "no_rows_updated": string;
+        "user_does_not_own_company": string;
+        "user_company_is_null": string;
+        "invalid_order_by": string;
+        "invalid_order_by_type": string;
     };
     "validate": {
         "isEmail": string;
         "isNotEmpty": string;
         "isString": string;
+        "isNumber": string;
         "minLength": string;
         "maxLength": string;
     };
