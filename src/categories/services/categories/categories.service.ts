@@ -15,6 +15,12 @@ export class CategoriesService {
     return this.categoriesRepo.find();
   }
 
+  async findById(categoryId: number): Promise<Category> {
+    return this.categoriesRepo.findOneBy({
+      id: categoryId,
+    });
+  }
+
   async create(createDto: CreateCategoryDto): Promise<number> {
     const res = await this.categoriesRepo.insert(createDto);
     return res.identifiers[0].id as number;

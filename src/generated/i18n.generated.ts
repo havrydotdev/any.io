@@ -12,6 +12,7 @@ export type I18nTranslations = {
         "user_company_is_null": string;
         "invalid_order_by": string;
         "invalid_order_by_type": string;
+        "category_does_not_exist": string;
     };
     "validate": {
         "isEmail": string;

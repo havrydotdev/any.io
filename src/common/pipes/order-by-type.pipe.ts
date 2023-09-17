@@ -7,6 +7,8 @@ export default class OrderByTypePipe implements PipeTransform {
   constructor(private readonly i18n: I18nService<I18nTranslations>) {}
 
   transform(value: any) {
+    if (!value) return value;
+
     if (!['asc', 'desc'].includes(value)) {
       throw new BadRequestException(
         this.i18n.t('messages.invalid_order_by_type', I18nContext.current()),

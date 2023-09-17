@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nContext, I18nService } from 'nestjs-i18n';
+import { CategoriesService } from 'src/categories/services/categories/categories.service';
 import UpdateCompanyDto from 'src/companies/dtos/update-company.dto';
 import { CompaniesService } from 'src/companies/services/companies/companies.service';
 import { I18nTranslations } from 'src/generated/i18n.generated';
@@ -21,6 +22,7 @@ export class ProductsService {
     private readonly productsRepo: Repository<Product>,
     private readonly companiesService: CompaniesService,
     private readonly i18n: I18nService<I18nTranslations>,
+    private readonly categoriesService: CategoriesService,
   ) {}
 
   async findAll({
@@ -30,8 +32,9 @@ export class ProductsService {
     page = 0,
     minPrice = 0,
     maxPrice = 99999999999999,
+    categoryId,
   }: FindAllQueryDto): Promise<Product[]> {
-    return this.productsRepo
+    const products = this.productsRepo
       .createQueryBuilder('product')
       .where('product.price BETWEEN :minPrice AND :maxPrice', {
         minPrice: minPrice,
@@ -42,10 +45,28 @@ export class ProductsService {
         orderByType.toUpperCase() as 'ASC' | 'DESC',
       )
       .leftJoinAndSelect('product.reviews', 'review')
-      .leftJoinAndSelect('product.category', 'category')
       .limit(limit)
-      .offset(page * limit)
-      .getMany();
+      .offset(page * limit);
+
+    if (categoryId) {
+      const category = await this.categoriesService.findById(categoryId);
+      if (!category) {
+        throw new BadRequestException(
+          this.i18n.t(
+            'messages.category_does_not_exist',
+            I18nContext.current(),
+          ),
+        );
+      }
+
+      products
+        .leftJoin('product.category', 'category')
+        .where('category.id = :categoryId', {
+          categoryId,
+        });
+    }
+
+    return products.getMany();
   }
 
   async findById(productId: number): Promise<Product> {
@@ -79,6 +100,9 @@ export class ProductsService {
       ...createDto,
       company: {
         id: company.id,
+      },
+      category: {
+        id: createDto.categoryId,
       },
     });
 

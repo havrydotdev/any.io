@@ -8,6 +8,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
+import { Public } from 'src/common/decorators/is-public.decorator';
 import OrderByTypePipe from 'src/common/pipes/order-by-type.pipe';
 import OrderByPipe from 'src/common/pipes/order-by.pipe';
 import CreateProductDto from 'src/products/dtos/create-product.dto';
@@ -24,6 +25,7 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
+  @Public()
   async findAll(
     @Query('order_by_type', OrderByTypePipe) orderByType: OrderByTypes,
     @Query('order_by', OrderByPipe) orderBy: OrderByFields,
@@ -32,7 +34,9 @@ export class ProductsController {
     @Query('min_price', new ParseIntPipe({ optional: true })) minPrice: number,
     @Query('max_price', new ParseIntPipe({ optional: true })) maxPrice: number,
     @Query('category') categoryId: number,
+    @Req() req: FastifyRequest,
   ): Promise<Product[]> {
+    console.log(req.cookies);
     return this.productsService.findAll({
       orderByType,
       orderBy,

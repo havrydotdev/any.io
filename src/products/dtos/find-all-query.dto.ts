@@ -35,4 +35,9 @@ export default class FindAllQueryDto {
   @IsNumberI18n()
   @Min(0)
   maxPrice: number;
+
+  @IsOptional()
+  @IsNumberI18n()
+  @Min(0)
+  categoryId?: number;
 }
