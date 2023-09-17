@@ -31,6 +31,7 @@ export class ProductsController {
     @Query('page', new ParseIntPipe({ optional: true })) page: number,
     @Query('min_price', new ParseIntPipe({ optional: true })) minPrice: number,
     @Query('max_price', new ParseIntPipe({ optional: true })) maxPrice: number,
+    @Query('category') categoryId: number,
   ): Promise<Product[]> {
     return this.productsService.findAll({
       orderByType,
@@ -39,6 +40,7 @@ export class ProductsController {
       page,
       minPrice,
       maxPrice,
+      categoryId,
     });
   }
 
