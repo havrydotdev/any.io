@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Role } from 'src/common/enums/roles.enum';
 import Company from 'src/companies/entities/company.entity';
 import Review from 'src/reviews/entities/review.entity';
 import {
@@ -66,6 +67,14 @@ export class User {
     default: 0,
   })
   balance: number;
+
+  @Column({
+    enum: Role,
+    enumName: 'role',
+    nullable: false,
+    default: Role.Client,
+  })
+  role: Role;
 
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];

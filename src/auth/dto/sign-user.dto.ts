@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Role } from 'src/common/enums/roles.enum';
 
 export default class SignUserDto {
   @ApiProperty({
@@ -24,4 +25,6 @@ export default class SignUserDto {
     example: 'Wade Allen',
   })
   name: string;
+
+  role: Role;
 }

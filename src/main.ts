@@ -20,9 +20,7 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
 
-  await app.register(() => fastifyCookie, {
-    secret: 'anyio',
-  });
+  await app.register(fastifyCookie);
 
   app.useGlobalFilters(...filters);
 

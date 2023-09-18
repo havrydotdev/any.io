@@ -17,6 +17,8 @@ export class UsersService {
         password: true,
         email: true,
         name: true,
+        id: true,
+        role: true,
       },
     });
   }

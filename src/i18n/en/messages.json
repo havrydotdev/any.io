@@ -8,5 +8,6 @@
   "user_company_is_null": "You don't have your own company, so you can't create products",
   "invalid_order_by": "Invalid field to order by",
   "invalid_order_by_type": "Invalid order by direction",
-  "category_does_not_exist": "This category does not exist"
+  "category_does_not_exist": "This category does not exist",
+  "category_already_exists": "This category does already exist"
 }

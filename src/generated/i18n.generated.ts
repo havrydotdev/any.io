@@ -13,6 +13,7 @@ export type I18nTranslations = {
         "invalid_order_by": string;
         "invalid_order_by_type": string;
         "category_does_not_exist": string;
+        "category_already_exists": string;
     };
     "validate": {
         "isEmail": string;

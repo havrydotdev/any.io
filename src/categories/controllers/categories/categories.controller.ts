@@ -19,7 +19,7 @@ export class CategoriesController {
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
   async create(@Body() createDto: CreateCategoryDto) {
-    const createdCategoryId = this.categoriesService.create(createDto);
+    const createdCategoryId = await this.categoriesService.create(createDto);
     return {
       ok: true,
       category_id: createdCategoryId,

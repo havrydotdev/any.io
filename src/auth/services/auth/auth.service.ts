@@ -12,7 +12,6 @@ import SignUserDto from '../../../auth/dto/sign-user.dto';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import IHashingService from 'src/hashing/interfaces/hashing-service.interface';
 import { I18nTranslations } from 'src/generated/i18n.generated';
-import { Role } from 'src/common/enums/roles.enum';
 
 @Injectable()
 export class AuthService {
@@ -34,6 +33,7 @@ export class AuthService {
         id: user.id,
         email: user.email,
         name: user.name,
+        role: user.role,
       };
     }
 
@@ -55,11 +55,12 @@ export class AuthService {
       });
     }
 
+    console.log(signPayload);
     return this.jwtService.sign({
       id: signPayload.id,
       email: signPayload.email,
       name: signPayload.name,
-      role: Role.Client,
+      role: signPayload.role,
     });
   }
 

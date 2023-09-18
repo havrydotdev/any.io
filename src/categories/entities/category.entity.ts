@@ -8,6 +8,7 @@ export default class Category {
 
   @Column({
     nullable: false,
+    unique: true,
   })
   title: string;
 

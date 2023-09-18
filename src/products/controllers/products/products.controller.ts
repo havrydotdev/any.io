@@ -6,8 +6,9 @@ import {
   Post,
   Query,
   Req,
+  Res,
 } from '@nestjs/common';
-import { FastifyRequest } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { Public } from 'src/common/decorators/is-public.decorator';
 import OrderByTypePipe from 'src/common/pipes/order-by-type.pipe';
 import OrderByPipe from 'src/common/pipes/order-by.pipe';
@@ -35,8 +36,19 @@ export class ProductsController {
     @Query('max_price', new ParseIntPipe({ optional: true })) maxPrice: number,
     @Query('category') categoryId: number,
     @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) res: FastifyReply,
   ): Promise<Product[]> {
-    console.log(req.cookies);
+    if (categoryId) {
+      const lastCategories: string[] = JSON.parse(
+        req.cookies['lastCategories'] ?? '[]',
+      );
+
+      res.setCookie(
+        'lastCategories',
+        JSON.stringify([categoryId, ...lastCategories]),
+      );
+    }
+
     return this.productsService.findAll({
       orderByType,
       orderBy,
