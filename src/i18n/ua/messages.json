@@ -9,5 +9,6 @@
   "invalid_order_by": "Такого параметру не існує або сортування по ньому неможливе",
   "invalid_order_by_type": "Невірний напрямок сортування",
   "category_does_not_exist": "Ця категорія не існує",
-  "category_already_exists": "Ця категорія вже існує"
+  "category_already_exists": "Ця категорія вже існує",
+  "invalid_cookies_error": "Не вдалося прочитати файл cookies. Щоб продовжити використовувати сайт, перезавантажте сторінку"
 }

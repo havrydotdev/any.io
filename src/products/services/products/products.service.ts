@@ -26,13 +26,14 @@ export class ProductsService {
   ) {}
 
   async findAll({
-    orderBy = 'id',
-    orderByType = 'desc',
+    orderBy,
+    orderByType,
     limit = 10,
     page = 0,
     minPrice = 0,
     maxPrice = 99999999999999,
     categoryId,
+    lastCategories,
   }: FindAllQueryDto): Promise<Product[]> {
     const products = this.productsRepo
       .createQueryBuilder('product')
@@ -40,11 +41,7 @@ export class ProductsService {
         minPrice: minPrice,
         maxPrice: maxPrice,
       })
-      .addOrderBy(
-        `product.${orderBy}`,
-        orderByType.toUpperCase() as 'ASC' | 'DESC',
-      )
-      .leftJoinAndSelect('product.reviews', 'review')
+      .leftJoinAndSelect('product.category', 'category')
       .limit(limit)
       .offset(page * limit);
 
@@ -59,11 +56,24 @@ export class ProductsService {
         );
       }
 
-      products
-        .leftJoin('product.category', 'category')
-        .where('category.id = :categoryId', {
-          categoryId,
-        });
+      products.where('category.id = :categoryId', {
+        categoryId,
+      });
+    }
+
+    if (orderBy) {
+      products.orderBy(
+        `product.${orderBy}`,
+        orderByType.toUpperCase() as 'ASC' | 'DESC',
+      );
+    } else if (lastCategories && lastCategories.length > 0) {
+      products.addOrderBy(
+        `(CASE WHEN category.id IN (${lastCategories.join(
+          ', ',
+        )}) THEN 1 ELSE NULL END)`,
+        'DESC',
+        'NULLS LAST',
+      );
     }
 
     return products.getMany();

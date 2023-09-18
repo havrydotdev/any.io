@@ -9,5 +9,6 @@
   "invalid_order_by": "Invalid field to order by",
   "invalid_order_by_type": "Invalid order by direction",
   "category_does_not_exist": "This category does not exist",
-  "category_already_exists": "This category does already exist"
+  "category_already_exists": "This category does already exist",
+  "invalid_cookies_error": "Failed to parse cookies. Reload page to continue using the app"
 }

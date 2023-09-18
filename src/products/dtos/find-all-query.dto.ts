@@ -40,4 +40,7 @@ export default class FindAllQueryDto {
   @IsNumberI18n()
   @Min(0)
   categoryId?: number;
+
+  @IsOptional()
+  lastCategories?: number[];
 }
