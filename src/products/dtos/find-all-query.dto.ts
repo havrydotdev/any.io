@@ -1,22 +1,8 @@
-import { IsEnum, IsOptional, Min } from 'class-validator';
+import { IsOptional, Min } from 'class-validator';
 import { IsNumberI18n } from 'src/common/decorators/is-number.decorator';
-import { IsStringI18n } from 'src/common/decorators/is-string.decorator';
-import PaginationDto from 'src/common/dto/pagination.dto';
+import OrderByQueryDto from 'src/common/dto/order-by.dto';
 
-export type OrderByFields = 'id' | 'title' | 'price';
-export type OrderByTypes = 'asc' | 'desc';
-
-export default class FindAllQueryDto extends PaginationDto {
-  @IsOptional()
-  @IsStringI18n()
-  @IsEnum(['id', 'title', 'price'])
-  orderBy?: OrderByFields;
-
-  @IsOptional()
-  @IsStringI18n()
-  @IsEnum(['asc', 'desc'])
-  orderByType?: OrderByTypes;
-
+export default class FindAllQueryDto extends OrderByQueryDto {
   @IsOptional()
   @IsNumberI18n()
   @Min(0)
