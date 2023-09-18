@@ -11,8 +11,4 @@ export default class PaginationDto {
   @IsNumberI18n()
   @Min(1)
   page?: number;
-
-  get skip(): number {
-    return this.page ? this.page * this.limit : 0;
-  }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Req } from '@nestjs/common';
 import LoginUserDto from '../../../auth/dto/login-user.dto';
 import { AuthService } from '../../../auth/services/auth/auth.service';
 import SignUserDto from '../../../auth/dto/sign-user.dto';
@@ -29,6 +29,7 @@ export class AuthController {
 
   @Public()
   @Post('login')
+  @HttpCode(200)
   @ApiUnauthorizedResponse({
     type: () => ErrorResponse,
     description: 'Incorrect user`s credentials',
@@ -45,6 +46,7 @@ export class AuthController {
 
   @Public()
   @Post('register')
+  @HttpCode(200)
   @ApiOkResponse({ type: () => RegisterResp, description: 'User registered' })
   async register(@Body() reqBody: CreateUserDto): Promise<RegisterResp> {
     const userId = await this.authService.register(reqBody);

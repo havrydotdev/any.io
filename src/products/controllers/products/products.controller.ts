@@ -12,14 +12,11 @@ import {
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { Public } from 'src/common/decorators/is-public.decorator';
+import { OrderByFields, OrderByTypes } from 'src/common/dto/order-by.dto';
 import OrderByTypePipe from 'src/common/pipes/order-by-type.pipe';
 import OrderByPipe from 'src/common/pipes/order-by.pipe';
 import { I18nTranslations } from 'src/generated/i18n.generated';
 import CreateProductDto from 'src/products/dtos/create-product.dto';
-import {
-  OrderByFields,
-  OrderByTypes,
-} from 'src/products/dtos/find-all-query.dto';
 import Product from 'src/products/entities/product.entity';
 import CreateProductResponse from 'src/products/responses/create-product.response';
 import { ProductsService } from 'src/products/services/products/products.service';

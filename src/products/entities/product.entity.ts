@@ -3,10 +3,12 @@ import Company from 'src/companies/entities/company.entity';
 import Review from 'src/reviews/entities/review.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('products')
@@ -25,10 +27,11 @@ export default class Product {
   })
   price: number;
 
-  @Column({
-    name: 'created_at',
-  })
-  createdAt: Date;
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @Column()
   image: string;

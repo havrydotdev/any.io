@@ -32,8 +32,8 @@ export class ProductsService {
     maxPrice = 99999999999999,
     categoryId,
     lastCategories,
-    skip,
-    sqlOrderType,
+    page,
+    orderByType,
   }: FindAllQueryDto): Promise<Product[]> {
     const products = this.productsRepo
       .createQueryBuilder('product')
@@ -43,7 +43,7 @@ export class ProductsService {
       })
       .leftJoinAndSelect('product.category', 'category')
       .limit(limit)
-      .offset(skip);
+      .offset(limit * page);
 
     if (categoryId) {
       const category = await this.categoriesService.findById(categoryId);
@@ -62,7 +62,10 @@ export class ProductsService {
     }
 
     if (orderBy) {
-      products.orderBy(`product.${orderBy}`, sqlOrderType);
+      products.orderBy(
+        `product.${orderBy}`,
+        orderByType.toUpperCase() as 'ASC' | 'DESC',
+      );
     } else if (lastCategories && lastCategories.length > 0) {
       products.addOrderBy(
         `(CASE WHEN category.id IN (${lastCategories.join(

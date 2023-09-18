@@ -20,8 +20,4 @@ export default class FindAllQueryDto extends OrderByQueryDto {
 
   @IsOptional()
   lastCategories?: number[];
-
-  get sqlOrderType(): 'ASC' | 'DESC' {
-    return this.orderByType?.toUpperCase() as 'ASC' | 'DESC';
-  }
 }

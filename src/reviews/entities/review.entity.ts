@@ -1,6 +1,13 @@
 import Product from 'src/products/entities/product.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('reviews')
 export default class Review {
@@ -13,10 +20,11 @@ export default class Review {
   @Column()
   rate: number;
 
-  @Column({
-    name: 'created_at',
-  })
-  createdAt: Date;
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @ManyToOne(() => Product, (product) => product.reviews)
   product: Product;
