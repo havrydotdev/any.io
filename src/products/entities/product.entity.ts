@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('products')
 export default class Product {
   @PrimaryGeneratedColumn()
   id: number;
@@ -24,6 +24,14 @@ export default class Product {
     nullable: false,
   })
   price: number;
+
+  @Column({
+    name: 'created_at',
+  })
+  createdAt: Date;
+
+  @Column()
+  image: string;
 
   // @Column({ type: 'array' })
   // tags: string[];

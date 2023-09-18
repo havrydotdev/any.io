@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('companies')
 export default class Company {
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,6 +19,11 @@ export default class Company {
 
   @Column()
   description: string;
+
+  @Column({
+    name: 'created_at',
+  })
+  createdAt: Date;
 
   @OneToMany(() => Product, (product) => product.company)
   products: Product[];

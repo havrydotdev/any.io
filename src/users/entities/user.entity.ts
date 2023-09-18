@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('users')
 export class User {
   @ApiProperty({
     type: 'number',
@@ -75,6 +75,11 @@ export class User {
     default: Role.Client,
   })
   role: Role;
+
+  @Column({
+    name: 'created_at',
+  })
+  createdAt: Date;
 
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];

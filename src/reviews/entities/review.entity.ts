@@ -2,7 +2,7 @@ import Product from 'src/products/entities/product.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('reviews')
 export default class Review {
   @PrimaryGeneratedColumn()
   id: number;
@@ -12,6 +12,11 @@ export default class Review {
 
   @Column()
   rate: number;
+
+  @Column({
+    name: 'created_at',
+  })
+  createdAt: Date;
 
   @ManyToOne(() => Product, (product) => product.reviews)
   product: Product;
