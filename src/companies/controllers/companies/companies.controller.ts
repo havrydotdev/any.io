@@ -15,6 +15,7 @@ import UpdateCompanyDto from 'src/companies/dtos/update-company.dto';
 import Company from 'src/companies/entities/company.entity';
 import { CompaniesService } from 'src/companies/services/companies/companies.service';
 
+// TODO: Add delete method
 @Controller('companies')
 export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}

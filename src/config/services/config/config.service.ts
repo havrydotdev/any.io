@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DotenvConfigOutput, DotenvParseOutput, config } from 'dotenv';
 
+// TODO: Add interface for this class
 @Injectable()
 export class ConfigService {
   private config: DotenvParseOutput;

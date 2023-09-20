@@ -5,7 +5,6 @@ import {
   Get,
   Inject,
   ParseIntPipe,
-  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -21,6 +20,7 @@ import { ReviewsService } from 'src/reviews/services/reviews/reviews.service';
 import { Cache } from 'cache-manager';
 import { FOUR_MINUTES } from 'src/common/constants';
 
+// TODO: Add delete and update methods
 @Controller('reviews')
 export class ReviewsController {
   constructor(
@@ -80,7 +80,4 @@ export class ReviewsController {
       });
     }
   }
-
-  @Patch()
-  async update() {}
 }

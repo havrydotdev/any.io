@@ -5,7 +5,9 @@ import {
   Get,
   Inject,
   InternalServerErrorException,
+  Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   Req,
@@ -26,7 +28,9 @@ import { ProductsService } from 'src/products/services/products/products.service
 import { Cache } from 'cache-manager';
 import { getProductsCacheKey } from 'src/common/utils/get-cache-key';
 import { FOUR_MINUTES } from 'src/common/constants';
+import UpdateProductDto from 'src/products/dtos/update-product.dto';
 
+// TODO: Add delete method
 @Controller('products')
 export class ProductsController {
   constructor(
@@ -114,5 +118,15 @@ export class ProductsController {
     return new IResponse({
       product_id: productId,
     });
+  }
+
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateDto: UpdateProductDto,
+    @Req() req: FastifyRequest,
+  ): Promise<IResponse<undefined>> {
+    await this.productsService.update(req.user.id, id, updateDto);
+    return new IResponse(undefined);
   }
 }

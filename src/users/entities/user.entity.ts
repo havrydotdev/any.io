@@ -1,28 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import IEntity from 'src/common/entities/base.entity';
 import { Role } from 'src/common/enums/roles.enum';
 import Company from 'src/companies/entities/company.entity';
 import Review from 'src/reviews/entities/review.entity';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 
 @Entity('users')
-export class User {
-  @ApiProperty({
-    type: 'number',
-    nullable: false,
-    description: 'User id',
-    example: 1,
-  })
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class User extends IEntity {
   @ApiProperty({
     type: 'string',
     nullable: false,
@@ -77,12 +61,6 @@ export class User {
     default: Role.Client,
   })
   role: Role;
-
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
 
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];

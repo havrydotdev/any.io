@@ -13,6 +13,7 @@ import { I18nContext, I18nService } from 'nestjs-i18n';
 import IHashingService from 'src/hashing/interfaces/hashing-service.interface';
 import { I18nTranslations } from 'src/generated/i18n.generated';
 
+// TODO: Add interface for this class
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
@@ -55,7 +56,6 @@ export class AuthService {
       });
     }
 
-    console.log(signPayload);
     return this.jwtService.sign({
       id: signPayload.id,
       email: signPayload.email,
@@ -74,6 +74,7 @@ export class AuthService {
         }),
       });
     }
+
     regDto.password = this.hashingService.encodePassword(regDto.password);
 
     return this.usersService.create(regDto);

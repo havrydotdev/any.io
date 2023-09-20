@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import CreateReviewDto from 'src/reviews/dtos/create-review.dto';
 import FindAllReviewsQueryDto from 'src/reviews/dtos/find-all.query.dto';
@@ -23,8 +23,28 @@ export class ReviewsService {
     return res.identifiers[0].id as number;
   }
 
-  async update(review: UpdateReviewDto): Promise<Review> {
-    return this.reviewsRepo.save(review);
+  async findById(id: number): Promise<Review> {
+    return this.reviewsRepo.findOneBy({
+      id,
+    });
+  }
+
+  // TODO: Add i18n for forbidden exception
+  async update(
+    userId: number,
+    reviewId: number,
+    dto: UpdateReviewDto,
+  ): Promise<void> {
+    const review = await this.findById(reviewId);
+    if (review.user.id !== userId) {
+      throw new ForbiddenException();
+    }
+
+    await this.reviewsRepo.update(reviewId, dto);
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.reviewsRepo.delete(id);
   }
 
   async findByProduct({

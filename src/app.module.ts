@@ -13,6 +13,7 @@ import { CategoriesModule } from './categories/categories.module';
 import typeOrmConfig from './common/configs/typeorm.config';
 import i18nConfig from './common/configs/i18n.config';
 import { CacheModule } from '@nestjs/cache-manager';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     CompaniesModule,
     ReviewsModule,
     CategoriesModule,
+    OrdersModule,
   ],
 })
 export class AppModule {}
