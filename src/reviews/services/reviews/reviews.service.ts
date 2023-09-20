@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import CreateReviewDto from 'src/reviews/dtos/create-review.dto';
-import FindAllQueryDto from 'src/reviews/dtos/find-all.query.dto';
+import FindAllReviewsQueryDto from 'src/reviews/dtos/find-all.query.dto';
 import UpdateReviewDto from 'src/reviews/dtos/update-review.dto';
 import Review from 'src/reviews/entities/review.entity';
 import { Repository } from 'typeorm';
@@ -30,10 +30,10 @@ export class ReviewsService {
   async findByProduct({
     orderBy,
     orderByType,
-    limit,
-    page,
+    limit = 10,
+    page = 0,
     productId,
-  }: FindAllQueryDto): Promise<Review[]> {
+  }: FindAllReviewsQueryDto): Promise<Review[]> {
     const reviews = this.reviewsRepo
       .createQueryBuilder('review')
       .select()

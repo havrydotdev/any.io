@@ -1,7 +1,9 @@
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import {
   Body,
   Controller,
   Get,
+  Inject,
   InternalServerErrorException,
   ParseIntPipe,
   Post,
@@ -15,15 +17,22 @@ import { Public } from 'src/common/decorators/is-public.decorator';
 import { OrderByFields, OrderByTypes } from 'src/common/dto/order-by.dto';
 import OrderByTypePipe from 'src/common/pipes/order-by-type.pipe';
 import OrderByPipe from 'src/common/pipes/order-by.pipe';
+import IResponse from 'src/common/responses/base.response';
 import { I18nTranslations } from 'src/generated/i18n.generated';
 import CreateProductDto from 'src/products/dtos/create-product.dto';
+import FindAllProductsQueryDto from 'src/products/dtos/find-all-query.dto';
 import Product from 'src/products/entities/product.entity';
-import CreateProductResponse from 'src/products/responses/create-product.response';
 import { ProductsService } from 'src/products/services/products/products.service';
+import { Cache } from 'cache-manager';
+import { getProductsCacheKey } from 'src/common/utils/get-cache-key';
+import { FOUR_MINUTES } from 'src/common/constants';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   @Get()
   @Public()
@@ -38,7 +47,11 @@ export class ProductsController {
     @I18n() i18n: I18nContext<I18nTranslations>,
     @Req() req: FastifyRequest,
     @Res({ passthrough: true }) res: FastifyReply,
-  ): Promise<Product[]> {
+  ): Promise<
+    IResponse<{
+      products: Product[];
+    }>
+  > {
     const lastCategories: number[] = JSON.parse(
       req.cookies['categories'] || '[]',
     ).map((category: string) => parseInt(category));
@@ -57,7 +70,7 @@ export class ProductsController {
       }
     }
 
-    return this.productsService.findAll({
+    const findQuery: FindAllProductsQueryDto = {
       orderByType,
       orderBy,
       limit,
@@ -66,19 +79,40 @@ export class ProductsController {
       maxPrice,
       categoryId,
       lastCategories,
-    });
+    };
+
+    const cacheKey = getProductsCacheKey(findQuery);
+
+    const cache = await this.cacheManager.get<Product[]>(cacheKey);
+
+    if (!cache) {
+      const products = await this.productsService.findAll(findQuery);
+
+      await this.cacheManager.set(cacheKey, products, FOUR_MINUTES);
+
+      return new IResponse({
+        products,
+      });
+    } else {
+      return new IResponse({
+        products: cache,
+      });
+    }
   }
 
   @Post()
   async create(
     @Req() req: FastifyRequest,
     @Body() createDto: CreateProductDto,
-  ): Promise<CreateProductResponse> {
+  ): Promise<
+    IResponse<{
+      product_id: number;
+    }>
+  > {
     const productId = await this.productsService.create(req.user.id, createDto);
 
-    return {
-      ok: true,
+    return new IResponse({
       product_id: productId,
-    };
+    });
   }
 }

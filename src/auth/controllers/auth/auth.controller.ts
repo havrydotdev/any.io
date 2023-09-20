@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, Post, Req } from '@nestjs/common';
-import LoginUserDto from '../../../auth/dto/login-user.dto';
+import LoginUserDto from '../../dtos/login-user.dto';
 import { AuthService } from '../../../auth/services/auth/auth.service';
-import SignUserDto from '../../../auth/dto/sign-user.dto';
+import SignUserDto from '../../dtos/sign-user.dto';
 import { Public } from '../../../common/decorators/is-public.decorator';
 import CreateUserDto from '../../../users/dto/create-user.dto';
 import { FastifyRequest } from 'fastify';
@@ -13,10 +13,8 @@ import {
   ApiHeader,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import TokenResponse from '../../response/token.response';
 import ErrorResponse from '../../../common/dto/error.dto';
-import RegisterResp from 'src/auth/response/register.response';
-import GetProfileResp from 'src/auth/response/profile.response';
+import IResponse from 'src/common/responses/base.response';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -34,27 +32,45 @@ export class AuthController {
     type: () => ErrorResponse,
     description: 'Incorrect user`s credentials',
   })
-  @ApiOkResponse({ type: () => TokenResponse, description: 'User logged in' })
-  async login(@Body() reqBody: LoginUserDto): Promise<TokenResponse> {
+  @ApiOkResponse({
+    type: () =>
+      IResponse<{
+        access_token: number;
+      }>,
+    description: 'User logged in',
+  })
+  async login(@Body() reqBody: LoginUserDto): Promise<
+    IResponse<{
+      access_token: string;
+    }>
+  > {
     const token = await this.authService.login(reqBody);
 
-    return {
+    return new IResponse({
       access_token: token,
-      ok: true,
-    };
+    });
   }
 
   @Public()
   @Post('register')
   @HttpCode(200)
-  @ApiOkResponse({ type: () => RegisterResp, description: 'User registered' })
-  async register(@Body() reqBody: CreateUserDto): Promise<RegisterResp> {
+  @ApiOkResponse({
+    type: () =>
+      IResponse<{
+        user_id: number;
+      }>,
+    description: 'User registered',
+  })
+  async register(@Body() reqBody: CreateUserDto): Promise<
+    IResponse<{
+      user_id: number;
+    }>
+  > {
     const userId = await this.authService.register(reqBody);
 
-    return {
+    return new IResponse({
       user_id: userId,
-      ok: true,
-    };
+    });
   }
 
   @Get('profile')
@@ -68,10 +84,11 @@ export class AuthController {
     description: 'User isn`t authorized',
   })
   @ApiOkResponse({ type: () => SignUserDto, description: 'User exist' })
-  getProfile(@Req() req: FastifyRequest): GetProfileResp {
-    return {
+  getProfile(@Req() req: FastifyRequest): IResponse<{
+    user: SignUserDto;
+  }> {
+    return new IResponse({
       user: req.user,
-      ok: true,
-    };
+    });
   }
 }

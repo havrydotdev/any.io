@@ -9,11 +9,10 @@ import {
   Req,
 } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
+import IResponse from 'src/common/responses/base.response';
 import CreateCompanyDto from 'src/companies/dtos/create-company.dto';
 import UpdateCompanyDto from 'src/companies/dtos/update-company.dto';
 import Company from 'src/companies/entities/company.entity';
-import CreateCompanyResponse from 'src/companies/responses/create-company.response';
-import UpdateCompanyResponse from 'src/companies/responses/update-company.response';
 import { CompaniesService } from 'src/companies/services/companies/companies.service';
 
 @Controller('companies')
@@ -24,37 +23,49 @@ export class CompaniesController {
   async create(
     @Body() companyDto: CreateCompanyDto,
     @Req() req: FastifyRequest,
-  ): Promise<CreateCompanyResponse> {
+  ): Promise<
+    IResponse<{
+      company_id: number;
+    }>
+  > {
     const companyId = await this.companiesService.create(
       req.user.id,
       companyDto,
     );
 
-    return {
-      ok: true,
+    return new IResponse({
       company_id: companyId,
-    };
+    });
   }
 
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) companyId: number,
     @Body() updateDto: UpdateCompanyDto,
-  ): Promise<UpdateCompanyResponse> {
+  ): Promise<
+    IResponse<{
+      company_id: number;
+    }>
+  > {
     const updatedCompanyId = await this.companiesService.update(
       companyId,
       updateDto,
     );
-    return {
-      ok: true,
+
+    return new IResponse({
       company_id: updatedCompanyId,
-    };
+    });
   }
 
   @Get(':id')
-  async findById(
-    @Param('id', ParseIntPipe) companyId: number,
-  ): Promise<Company> {
-    return this.companiesService.findById(companyId);
+  async findById(@Param('id', ParseIntPipe) companyId: number): Promise<
+    IResponse<{
+      company: Company;
+    }>
+  > {
+    const company = await this.companiesService.findById(companyId);
+    return new IResponse({
+      company,
+    });
   }
 }

@@ -2,7 +2,7 @@ import { IsOptional, Min } from 'class-validator';
 import { IsNumberI18n } from 'src/common/decorators/is-number.decorator';
 import OrderByQueryDto from 'src/common/dto/order-by.dto';
 
-export default class FindAllQueryDto extends OrderByQueryDto {
+export default class FindAllProductsQueryDto extends OrderByQueryDto {
   @IsOptional()
   @IsNumberI18n()
   @Min(0)

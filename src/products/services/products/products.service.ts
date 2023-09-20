@@ -11,7 +11,7 @@ import UpdateCompanyDto from 'src/companies/dtos/update-company.dto';
 import { CompaniesService } from 'src/companies/services/companies/companies.service';
 import { I18nTranslations } from 'src/generated/i18n.generated';
 import CreateProductDto from 'src/products/dtos/create-product.dto';
-import FindAllQueryDto from 'src/products/dtos/find-all-query.dto';
+import FindAllProductsQueryDto from 'src/products/dtos/find-all-query.dto';
 import Product from 'src/products/entities/product.entity';
 import { Repository } from 'typeorm';
 
@@ -32,9 +32,9 @@ export class ProductsService {
     maxPrice = 99999999999999,
     categoryId,
     lastCategories,
-    page,
+    page = 0,
     orderByType,
-  }: FindAllQueryDto): Promise<Product[]> {
+  }: FindAllProductsQueryDto): Promise<Product[]> {
     const products = this.productsRepo
       .createQueryBuilder('product')
       .where('product.price BETWEEN :minPrice AND :maxPrice', {
@@ -56,7 +56,7 @@ export class ProductsService {
         );
       }
 
-      products.where('category.id = :categoryId', {
+      products.andWhere('category.id = :categoryId', {
         categoryId,
       });
     }
@@ -104,6 +104,15 @@ export class ProductsService {
     if (!company) {
       throw new BadRequestException(
         this.i18n.t('messages.user_company_is_null', I18nContext.current()),
+      );
+    }
+
+    const category = await this.categoriesService.findById(
+      createDto.categoryId,
+    );
+    if (!category) {
+      throw new BadRequestException(
+        this.i18n.t('messages.category_does_not_exist', I18nContext.current()),
       );
     }
 

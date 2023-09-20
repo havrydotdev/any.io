@@ -12,9 +12,13 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { CategoriesModule } from './categories/categories.module';
 import typeOrmConfig from './common/configs/typeorm.config';
 import i18nConfig from './common/configs/i18n.config';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
+    CacheModule.register({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRootAsync(typeOrmConfig),
     I18nModule.forRootAsync(i18nConfig),
     AuthModule,

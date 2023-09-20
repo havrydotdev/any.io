@@ -1,21 +1,11 @@
 import Category from 'src/categories/entities/category.entity';
+import IEntity from 'src/common/entities/base.entity';
 import Company from 'src/companies/entities/company.entity';
 import Review from 'src/reviews/entities/review.entity';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity('products')
-export default class Product {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export default class Product extends IEntity {
   @Column()
   title: string;
 
@@ -27,14 +17,8 @@ export default class Product {
   })
   price: number;
 
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
-
-  @Column()
-  image: string;
+  // @Column()
+  // image: string;
 
   // @Column({ type: 'array' })
   // tags: string[];

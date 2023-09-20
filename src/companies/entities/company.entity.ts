@@ -1,32 +1,15 @@
+import IEntity from 'src/common/entities/base.entity';
 import Product from 'src/products/entities/product.entity';
 import { User } from 'src/users/entities/user.entity';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 
 @Entity('companies')
-export default class Company {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export default class Company extends IEntity {
   @Column()
   name: string;
 
   @Column()
   description: string;
-
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
 
   @OneToMany(() => Product, (product) => product.company)
   products: Product[];

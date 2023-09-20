@@ -1,11 +1,9 @@
+import IEntity from 'src/common/entities/base.entity';
 import Product from 'src/products/entities/product.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity('categories')
-export default class Category {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export default class Category extends IEntity {
   @Column({
     nullable: false,
     unique: true,

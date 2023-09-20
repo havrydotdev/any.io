@@ -1,3 +1,4 @@
+import { Expose, Transform } from 'class-transformer';
 import { IsPositive, Min } from 'class-validator';
 import { IsNotEmptyI18n } from 'src/common/decorators/is-not-empty.decorator';
 import { IsNumberI18n } from 'src/common/decorators/is-number.decorator';
@@ -16,5 +17,9 @@ export default class CreateReviewDto {
   @IsNotEmptyI18n()
   @IsNumberI18n()
   @Min(1)
+  @Expose()
+  @Transform(({ value, obj }) =>
+    typeof value === 'undefined' ? obj['product_id'] : value,
+  )
   productId: number;
 }

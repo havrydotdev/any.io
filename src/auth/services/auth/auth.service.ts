@@ -5,10 +5,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import LoginUserDto from '../../../auth/dto/login-user.dto';
+import LoginUserDto from '../../dtos/login-user.dto';
 import { UsersService } from '../../../users/services/users/users.service';
 import CreateUserDto from '../../../users/dto/create-user.dto';
-import SignUserDto from '../../../auth/dto/sign-user.dto';
+import SignUserDto from '../../dtos/sign-user.dto';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import IHashingService from 'src/hashing/interfaces/hashing-service.interface';
 import { I18nTranslations } from 'src/generated/i18n.generated';
