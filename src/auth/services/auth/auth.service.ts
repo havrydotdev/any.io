@@ -12,11 +12,12 @@ import SignUserDto from '../../dtos/sign-user.dto';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import IHashingService from 'src/hashing/interfaces/hashing-service.interface';
 import { I18nTranslations } from 'src/generated/i18n.generated';
+import IAuthService from 'src/auth/interfaces/auth-service.interface';
 
-// TODO: Add interface for this class
 @Injectable()
-export class AuthService {
-  private readonly logger = new Logger(AuthService.name);
+export class AuthService implements IAuthService {
+  private readonly logger = new Logger(IAuthService.name);
+
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,

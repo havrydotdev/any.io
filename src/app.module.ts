@@ -11,9 +11,9 @@ import { CompaniesModule } from './companies/companies.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { CategoriesModule } from './categories/categories.module';
 import typeOrmConfig from './common/configs/typeorm.config';
-import i18nConfig from './common/configs/i18n.config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { OrdersModule } from './orders/orders.module';
+import i18nConfig from './common/configs/i18n.config';
 
 @Module({
   imports: [

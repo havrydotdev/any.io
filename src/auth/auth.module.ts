@@ -12,6 +12,7 @@ import { HashingModule } from 'src/hashing/hashing.module';
 import IHashingService from 'src/hashing/interfaces/hashing-service.interface';
 import { BcryptService } from 'src/hashing/services/bcrypt/bcrypt.service';
 import jwtConfig from 'src/common/configs/jwt.config';
+import IAuthService from './interfaces/auth-service.interface';
 
 @Module({
   imports: [
@@ -22,10 +23,16 @@ import jwtConfig from 'src/common/configs/jwt.config';
     HashingModule,
   ],
   providers: [
-    AuthService,
+    {
+      provide: IAuthService,
+      useClass: AuthService,
+    },
     JwtStrategy,
     UsersService,
-    { provide: IHashingService, useClass: BcryptService },
+    {
+      provide: IHashingService,
+      useClass: BcryptService,
+    },
   ],
   controllers: [AuthController],
 })

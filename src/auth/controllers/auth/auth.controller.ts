@@ -1,6 +1,5 @@
 import { Body, Controller, Get, HttpCode, Post, Req } from '@nestjs/common';
 import LoginUserDto from '../../dtos/login-user.dto';
-import { AuthService } from '../../../auth/services/auth/auth.service';
 import SignUserDto from '../../dtos/sign-user.dto';
 import { Public } from '../../../common/decorators/is-public.decorator';
 import CreateUserDto from '../../../users/dto/create-user.dto';
@@ -15,6 +14,7 @@ import {
 } from '@nestjs/swagger';
 import ErrorResponse from '../../../common/dto/error.dto';
 import IResponse from 'src/common/responses/base.response';
+import IAuthService from 'src/auth/interfaces/auth-service.interface';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -23,7 +23,7 @@ import IResponse from 'src/common/responses/base.response';
   description: 'Something went wrong',
 })
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: IAuthService) {}
 
   @Public()
   @Post('login')
