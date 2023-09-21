@@ -79,6 +79,7 @@ export class ProductsService {
     return products.getMany();
   }
 
+  // TODO: fix i18n message
   async findById(productId: number): Promise<Product> {
     const product = await this.productsRepo.findOne({
       where: {
@@ -129,6 +130,7 @@ export class ProductsService {
     return res.identifiers[0].id as number;
   }
 
+  // TODO: Fix i18n message
   async update(
     userId: number,
     productId: number,
@@ -164,5 +166,29 @@ export class ProductsService {
         this.i18n.t('messages.no_rows_updated', I18nContext.current()),
       );
     }
+  }
+
+  // TODO: Fix i18n message
+  async delete(userId: number, productId: number): Promise<void> {
+    const product = await this.findById(productId);
+    if (!product) {
+      throw new BadRequestException(
+        this.i18n.t('messages.no_rows_updated', I18nContext.current()),
+      );
+    }
+
+    const company = await this.companiesService.findByUserId(userId);
+    if (company.user.id !== userId) {
+      throw new UnauthorizedException(
+        this.i18n.t(
+          'messages.user_does_not_own_company',
+          I18nContext.current(),
+        ),
+      );
+    }
+
+    await this.productsRepo.delete({
+      id: productId,
+    });
   }
 }

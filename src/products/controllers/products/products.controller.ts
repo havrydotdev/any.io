@@ -1,7 +1,7 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import {
   Body,
-  Controller,
+  Controller, Delete,
   Get,
   Inject,
   InternalServerErrorException,
@@ -85,12 +85,12 @@ export class ProductsController {
       lastCategories,
     };
 
-    const cacheKey = getProductsCacheKey(findQuery);
+    const cacheKey: string = getProductsCacheKey(findQuery);
 
-    const cache = await this.cacheManager.get<Product[]>(cacheKey);
+    const cache: Product[] = await this.cacheManager.get<Product[]>(cacheKey);
 
     if (!cache) {
-      const products = await this.productsService.findAll(findQuery);
+      const products: Product[] = await this.productsService.findAll(findQuery);
 
       await this.cacheManager.set(cacheKey, products, FOUR_MINUTES);
 
@@ -113,7 +113,10 @@ export class ProductsController {
       product_id: number;
     }>
   > {
-    const productId = await this.productsService.create(req.user.id, createDto);
+    const productId: number = await this.productsService.create(
+      req.user.id,
+      createDto,
+    );
 
     return new IResponse({
       product_id: productId,
@@ -127,6 +130,15 @@ export class ProductsController {
     @Req() req: FastifyRequest,
   ): Promise<IResponse<undefined>> {
     await this.productsService.update(req.user.id, id, updateDto);
+    return new IResponse(undefined);
+  }
+
+  @Delete(':id')
+  async delete(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: FastifyRequest,
+  ): Promise<IResponse<undefined>> {
+    await this.productsService.delete(req.user.id, id);
     return new IResponse(undefined);
   }
 }

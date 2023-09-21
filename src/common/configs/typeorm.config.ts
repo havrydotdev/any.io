@@ -1,4 +1,5 @@
 import { TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
+import IConfigService from 'src/config/interfaces/config-service.interface';
 import { ConfigService } from 'src/config/services/config/config.service';
 
 const typeOrmConfig: TypeOrmModuleAsyncOptions = {
@@ -15,7 +16,7 @@ const typeOrmConfig: TypeOrmModuleAsyncOptions = {
       entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
     };
   },
-  inject: [ConfigService],
+  inject: [IConfigService],
 };
 
 export default typeOrmConfig;

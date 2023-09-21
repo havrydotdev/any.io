@@ -14,7 +14,7 @@ const filters = [
   new I18nValidationExceptionFilter(),
 ];
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
@@ -26,7 +26,7 @@ async function bootstrap() {
 
   app.useGlobalFilters(...filters);
 
-  const config = app.get<ConfigService>(ConfigService);
+  const config: ConfigService = app.get<ConfigService>(ConfigService);
 
   await app.listen(config.get('PORT') ?? 3000);
 }

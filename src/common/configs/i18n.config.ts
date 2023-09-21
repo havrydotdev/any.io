@@ -6,7 +6,6 @@ import {
 } from 'nestjs-i18n';
 import { join } from 'path';
 import IConfigService from 'src/config/interfaces/config-service.interface';
-import { ConfigService } from 'src/config/services/config/config.service';
 
 const i18nConfig: I18nAsyncOptions = {
   useFactory: (configService: IConfigService) => ({
@@ -25,12 +24,7 @@ const i18nConfig: I18nAsyncOptions = {
     AcceptLanguageResolver,
     new HeaderResolver(['x-lang']),
   ],
-  inject: [
-    {
-      provide: IConfigService,
-      useClass: ConfigService,
-    },
-  ],
+  inject: [IConfigService],
 };
 
 export default i18nConfig;
