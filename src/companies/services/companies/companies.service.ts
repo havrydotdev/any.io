@@ -17,7 +17,8 @@ export class CompaniesService {
     @InjectRepository(Company)
     private readonly companiesRepo: Repository<Company>,
     private readonly i18n: I18nService<I18nTranslations>,
-  ) {}
+  ) {
+  }
 
   async create(userId: number, companyDto: CreateCompanyDto): Promise<number> {
     const res = await this.companiesRepo.insert({
@@ -85,5 +86,19 @@ export class CompaniesService {
     }
 
     return res.generatedMaps[0].id;
+  }
+
+  // TODO: fix i18n messages
+  async delete(userId: number, companyId: number): Promise<void> {
+    const company = await this.findByUserId(userId);
+    if (!company || company.id !== companyId) {
+      throw new BadRequestException(
+        this.i18n.t('messages.no_rows_updated', I18nContext.current()),
+      );
+    }
+
+    await this.companiesRepo.delete({
+      id: companyId,
+    });
   }
 }

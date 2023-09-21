@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -15,7 +16,6 @@ import UpdateCompanyDto from 'src/companies/dtos/update-company.dto';
 import Company from 'src/companies/entities/company.entity';
 import { CompaniesService } from 'src/companies/services/companies/companies.service';
 
-// TODO: Add delete method
 @Controller('companies')
 export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
@@ -68,5 +68,14 @@ export class CompaniesController {
     return new IResponse({
       company,
     });
+  }
+
+  @Delete(':id')
+  async delete(
+    @Param('id', ParseIntPipe) companyId: number,
+    @Req() req: FastifyRequest,
+  ): Promise<IResponse<undefined>> {
+    await this.companiesService.delete(req.user.id, companyId);
+    return new IResponse(undefined);
   }
 }

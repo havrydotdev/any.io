@@ -4,9 +4,12 @@ import {
   Controller,
   Get,
   Inject,
+  Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
+  Req,
 } from '@nestjs/common';
 import { OrderByFields, OrderByTypes } from 'src/common/dto/order-by.dto';
 import OrderByTypePipe from 'src/common/pipes/order-by-type.pipe';
@@ -19,6 +22,8 @@ import Review from 'src/reviews/entities/review.entity';
 import { ReviewsService } from 'src/reviews/services/reviews/reviews.service';
 import { Cache } from 'cache-manager';
 import { FOUR_MINUTES } from 'src/common/constants';
+import { FastifyRequest } from 'fastify';
+import UpdateReviewDto from '../../dtos/update-review.dto';
 
 // TODO: Add delete and update methods
 @Controller('reviews')
@@ -79,5 +84,16 @@ export class ReviewsController {
         reviews: cachedReviews,
       });
     }
+  }
+
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateDto: UpdateReviewDto,
+    @Req() req: FastifyRequest,
+  ): Promise<IResponse<undefined>> {
+    await this.reviewsService.update(req.user.id, id, updateDto);
+
+    return new IResponse(undefined);
   }
 }

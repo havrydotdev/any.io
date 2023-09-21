@@ -1,7 +1,8 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import {
   Body,
-  Controller, Delete,
+  Controller,
+  Delete,
   Get,
   Inject,
   InternalServerErrorException,
@@ -30,7 +31,6 @@ import { getProductsCacheKey } from 'src/common/utils/get-cache-key';
 import { FOUR_MINUTES } from 'src/common/constants';
 import UpdateProductDto from 'src/products/dtos/update-product.dto';
 
-// TODO: Add delete method
 @Controller('products')
 export class ProductsController {
   constructor(
