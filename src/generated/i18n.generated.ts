@@ -15,6 +15,8 @@ export type I18nTranslations = {
         "category_does_not_exist": string;
         "category_already_exists": string;
         "invalid_cookies_error": string;
+        "forbidden_update_review": string;
+        "forbidden_delete_review": string;
     };
     "validate": {
         "isEmail": string;
@@ -23,6 +25,8 @@ export type I18nTranslations = {
         "isNumber": string;
         "minLength": string;
         "maxLength": string;
+        "isArray": string;
+        "min": string;
     };
 };
 export type I18nPath = Path<I18nTranslations>;

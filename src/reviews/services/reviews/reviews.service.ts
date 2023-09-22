@@ -5,11 +5,14 @@ import FindAllReviewsQueryDto from 'src/reviews/dtos/find-all.query.dto';
 import UpdateReviewDto from 'src/reviews/dtos/update-review.dto';
 import Review from 'src/reviews/entities/review.entity';
 import { Repository } from 'typeorm';
+import { I18nContext, I18nService } from 'nestjs-i18n';
+import { I18nTranslations } from '../../../generated/i18n.generated';
 
 @Injectable()
 export class ReviewsService {
   constructor(
     @InjectRepository(Review) private readonly reviewsRepo: Repository<Review>,
+    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   async create(review: CreateReviewDto): Promise<number> {
@@ -29,7 +32,6 @@ export class ReviewsService {
     });
   }
 
-  // TODO: Add i18n for forbidden exception
   async update(
     userId: number,
     reviewId: number,
@@ -37,13 +39,22 @@ export class ReviewsService {
   ): Promise<void> {
     const review = await this.findById(reviewId);
     if (review.user.id !== userId) {
-      throw new ForbiddenException();
+      throw new ForbiddenException(
+        this.i18n.t('messages.forbidden_update_review', I18nContext.current()),
+      );
     }
 
     await this.reviewsRepo.update(reviewId, dto);
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(userId: number, id: number): Promise<void> {
+    const review = await this.findById(id);
+    if (review.user.id !== userId) {
+      throw new ForbiddenException(
+        this.i18n.t('messages.forbidden_delete_review', I18nContext.current()),
+      );
+    }
+
     await this.reviewsRepo.delete(id);
   }
 

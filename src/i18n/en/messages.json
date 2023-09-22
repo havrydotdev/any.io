@@ -4,11 +4,13 @@
   "incorrect_creds": "Incorrect credentials",
   "email_exists": "User with this email does already exist",
   "no_rows_updated": "This entity does not exist or unknown error occured",
-  "user_does_not_own_company": "You does not own this company, so you can't update it's products",
-  "user_company_is_null": "You don't have your own company, so you can't create products",
+  "user_does_not_own_company": "You does not own this company",
+  "user_company_is_null": "You don't have your own company",
   "invalid_order_by": "Invalid field to order by",
   "invalid_order_by_type": "Invalid order by direction",
   "category_does_not_exist": "This category does not exist",
   "category_already_exists": "This category does already exist",
-  "invalid_cookies_error": "Failed to parse cookies. Reload page to continue using the app"
+  "invalid_cookies_error": "Failed to parse cookies. Reload page to continue using the app",
+  "forbidden_update_review": "You can't update this review because you're not it's author",
+  "forbidden_delete_review": "You can't update this review because you're not it's author"
 }

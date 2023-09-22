@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -17,8 +18,7 @@ export class CompaniesService {
     @InjectRepository(Company)
     private readonly companiesRepo: Repository<Company>,
     private readonly i18n: I18nService<I18nTranslations>,
-  ) {
-  }
+  ) {}
 
   async create(userId: number, companyDto: CreateCompanyDto): Promise<number> {
     const res = await this.companiesRepo.insert({
@@ -52,29 +52,27 @@ export class CompaniesService {
   }
 
   async findByUserId(userId: number): Promise<Company> {
-    const company = await this.companiesRepo.findOneBy({
+    return this.companiesRepo.findOneBy({
       user: {
         id: userId,
       },
     });
-
-    return company;
   }
 
-  async update(
-    companyId: number,
-    updateDto: UpdateCompanyDto,
-  ): Promise<number> {
-    const company = await this.findById(companyId);
-    if (!company) {
-      throw new BadRequestException(
-        this.i18n.t('messages.no_rows_updated', I18nContext.current()),
+  async update(userId: number, updateDto: UpdateCompanyDto): Promise<number> {
+    const company = await this.findByUserId(userId);
+    if (!company || company.user.id !== userId) {
+      throw new ForbiddenException(
+        this.i18n.t(
+          'messages.user_does_not_own_company',
+          I18nContext.current(),
+        ),
       );
     }
 
     const res = await this.companiesRepo.update(
       {
-        id: companyId,
+        id: company.id,
       },
       updateDto,
     );
@@ -88,12 +86,14 @@ export class CompaniesService {
     return res.generatedMaps[0].id;
   }
 
-  // TODO: fix i18n messages
   async delete(userId: number, companyId: number): Promise<void> {
     const company = await this.findByUserId(userId);
     if (!company || company.id !== companyId) {
-      throw new BadRequestException(
-        this.i18n.t('messages.no_rows_updated', I18nContext.current()),
+      throw new ForbiddenException(
+        this.i18n.t(
+          'messages.user_does_not_own_company',
+          I18nContext.current(),
+        ),
       );
     }
 

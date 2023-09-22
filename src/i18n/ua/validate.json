@@ -4,5 +4,7 @@
   "isString": "{property} має бути строкою",
   "isNumber": "{property} має бути числом",
   "minLength": "{property} має складатися більше ніж з {len} символів",
-  "maxLength": "{property} має складатися менше ніж з {len} символів"
+  "maxLength": "{property} має складатися менше ніж з {len} символів",
+  "isArray": "{property} має бути масивом",
+  "min": "{property} має бути більшим за {constraints.0}"
 }

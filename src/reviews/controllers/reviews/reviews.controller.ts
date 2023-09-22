@@ -2,6 +2,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -25,7 +26,6 @@ import { FOUR_MINUTES } from 'src/common/constants';
 import { FastifyRequest } from 'fastify';
 import UpdateReviewDto from '../../dtos/update-review.dto';
 
-// TODO: Add delete and update methods
 @Controller('reviews')
 export class ReviewsController {
   constructor(
@@ -93,6 +93,16 @@ export class ReviewsController {
     @Req() req: FastifyRequest,
   ): Promise<IResponse<undefined>> {
     await this.reviewsService.update(req.user.id, id, updateDto);
+
+    return new IResponse(undefined);
+  }
+
+  @Delete(':id')
+  async delete(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: FastifyRequest,
+  ): Promise<IResponse<undefined>> {
+    await this.reviewsService.delete(req.user.id, id);
 
     return new IResponse(undefined);
   }
