@@ -12,5 +12,6 @@
   "category_already_exists": "This category does already exist",
   "invalid_cookies_error": "Failed to parse cookies. Reload page to continue using the app",
   "forbidden_update_review": "You can't update this review because you're not it's author",
-  "forbidden_delete_review": "You can't update this review because you're not it's author"
+  "forbidden_delete_review": "You can't update this review because you're not it's author",
+  "user_does_not_own_order": "You don't own this order"
 }

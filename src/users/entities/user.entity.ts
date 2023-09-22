@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import IEntity from 'src/common/entities/base.entity';
 import { Role } from 'src/common/enums/roles.enum';
 import Company from 'src/companies/entities/company.entity';
+import Order from 'src/orders/entities/order.entity';
 import Review from 'src/reviews/entities/review.entity';
 import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 
@@ -14,9 +15,24 @@ export class User extends IEntity {
     example: 'Wade Allen',
   })
   @Column({
-    nullable: false,
+    nullable: true,
   })
   name: string;
+
+  @Column({
+    nullable: true,
+  })
+  lastname: string;
+
+  @Column({
+    nullable: true,
+  })
+  patronymic: string;
+
+  @Column({
+    nullable: true,
+  })
+  phone: string;
 
   @ApiProperty({
     type: 'string',
@@ -69,4 +85,7 @@ export class User extends IEntity {
     nullable: true,
   })
   company: Company;
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
 }

@@ -17,6 +17,7 @@ export type I18nTranslations = {
         "invalid_cookies_error": string;
         "forbidden_update_review": string;
         "forbidden_delete_review": string;
+        "user_does_not_own_order": string;
     };
     "validate": {
         "isEmail": string;

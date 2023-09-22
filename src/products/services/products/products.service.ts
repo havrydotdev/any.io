@@ -42,7 +42,7 @@ export class ProductsService {
         maxPrice: maxPrice,
       })
       .leftJoinAndSelect('product.category', 'category')
-      .limit(limit)
+      .take(limit)
       .offset(limit * page);
 
     if (categoryId) {

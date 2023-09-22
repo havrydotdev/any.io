@@ -71,7 +71,7 @@ export class ReviewsService {
       .leftJoin('review.product', 'product')
       .where('product.id = :productId', { productId })
       .orderBy('review.created_at', 'DESC')
-      .limit(limit)
+      .take(limit)
       .skip(limit * page);
 
     if (orderBy) {

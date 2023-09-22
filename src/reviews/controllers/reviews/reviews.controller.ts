@@ -25,6 +25,7 @@ import { Cache } from 'cache-manager';
 import { FOUR_MINUTES } from 'src/common/constants';
 import { FastifyRequest } from 'fastify';
 import UpdateReviewDto from '../../dtos/update-review.dto';
+import { Public } from 'src/common/decorators/is-public.decorator';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -47,6 +48,7 @@ export class ReviewsController {
   }
 
   @Get()
+  @Public()
   async findByProduct(
     @Query('productId', ParseIntPipe)
     productId: number,
