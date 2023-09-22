@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import CreateReviewDto from 'src/reviews/dtos/create-review.dto';
 import FindAllReviewsQueryDto from 'src/reviews/dtos/find-all.query.dto';
@@ -7,12 +7,19 @@ import Review from 'src/reviews/entities/review.entity';
 import { Repository } from 'typeorm';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from '../../../generated/i18n.generated';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import {
+  getReviewCacheKey,
+  getReviewsCacheKey,
+} from 'src/common/utils/get-cache-key';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class ReviewsService {
   constructor(
     @InjectRepository(Review) private readonly reviewsRepo: Repository<Review>,
     private readonly i18n: I18nService<I18nTranslations>,
+    @Inject(CACHE_MANAGER) private cache: Cache,
   ) {}
 
   async create(review: CreateReviewDto): Promise<number> {
@@ -27,9 +34,19 @@ export class ReviewsService {
   }
 
   async findById(id: number): Promise<Review> {
-    return this.reviewsRepo.findOneBy({
+    const cacheKey = getReviewCacheKey(id);
+
+    const cachedReview = await this.cache.get<Review>(cacheKey);
+
+    if (cachedReview) {
+      return cachedReview;
+    }
+
+    const review = this.reviewsRepo.findOneBy({
       id,
     });
+
+    return review;
   }
 
   async update(
@@ -65,6 +82,20 @@ export class ReviewsService {
     page = 0,
     productId,
   }: FindAllReviewsQueryDto): Promise<Review[]> {
+    const cacheKey = getReviewsCacheKey({
+      productId,
+      orderByType,
+      orderBy,
+      limit,
+      page,
+    });
+
+    const cachedReviews = await this.cache.get<Review[]>(cacheKey);
+
+    if (cachedReviews) {
+      return cachedReviews;
+    }
+
     const reviews = this.reviewsRepo
       .createQueryBuilder('review')
       .select()
@@ -80,6 +111,8 @@ export class ReviewsService {
         orderByType.toUpperCase() as 'ASC' | 'DESC',
       );
     }
+
+    this.cache.set(cacheKey, reviews.getMany(), 240);
 
     return reviews.getMany();
   }

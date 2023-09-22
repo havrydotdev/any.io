@@ -1,4 +1,5 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cache } from 'cache-manager';
 import { I18nService } from 'nestjs-i18n';
@@ -18,7 +19,7 @@ export class OrdersService {
   constructor(
     @InjectRepository(Order) private readonly ordersRepo: Repository<Order>,
     private readonly i18n: I18nService<I18nTranslations>,
-    private readonly cache: Cache,
+    @Inject(CACHE_MANAGER) private readonly cache: Cache,
   ) {}
 
   async create(createDto: CreateOrderDto): Promise<number> {

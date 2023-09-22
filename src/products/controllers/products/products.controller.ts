@@ -1,10 +1,8 @@
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import {
   Body,
   Controller,
   Delete,
   Get,
-  Inject,
   InternalServerErrorException,
   Param,
   ParseIntPipe,
@@ -23,20 +21,13 @@ import OrderByPipe from 'src/common/pipes/order-by.pipe';
 import IResponse from 'src/common/responses/base.response';
 import { I18nTranslations } from 'src/generated/i18n.generated';
 import CreateProductDto from 'src/products/dtos/create-product.dto';
-import FindAllProductsQueryDto from 'src/products/dtos/find-all-query.dto';
 import Product from 'src/products/entities/product.entity';
 import { ProductsService } from 'src/products/services/products/products.service';
-import { Cache } from 'cache-manager';
-import { getProductsCacheKey } from 'src/common/utils/get-cache-key';
-import { FOUR_MINUTES } from 'src/common/constants';
 import UpdateProductDto from 'src/products/dtos/update-product.dto';
 
 @Controller('products')
 export class ProductsController {
-  constructor(
-    private readonly productsService: ProductsService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) {}
+  constructor(private readonly productsService: ProductsService) {}
 
   @Get()
   @Public()
@@ -74,7 +65,7 @@ export class ProductsController {
       }
     }
 
-    const findQuery: FindAllProductsQueryDto = {
+    const products: Product[] = await this.productsService.findAll({
       orderByType,
       orderBy,
       limit,
@@ -83,25 +74,11 @@ export class ProductsController {
       maxPrice,
       categoryId,
       lastCategories,
-    };
+    });
 
-    const cacheKey: string = getProductsCacheKey(findQuery);
-
-    const cache: Product[] = await this.cacheManager.get<Product[]>(cacheKey);
-
-    if (!cache) {
-      const products: Product[] = await this.productsService.findAll(findQuery);
-
-      await this.cacheManager.set(cacheKey, products, FOUR_MINUTES);
-
-      return new IResponse({
-        products,
-      });
-    } else {
-      return new IResponse({
-        products: cache,
-      });
-    }
+    return new IResponse({
+      products,
+    });
   }
 
   @Post()

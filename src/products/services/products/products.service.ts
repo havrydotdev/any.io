@@ -1,5 +1,7 @@
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
@@ -7,6 +9,10 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { CategoriesService } from 'src/categories/services/categories/categories.service';
+import {
+  getProductCacheKey,
+  getProductsCacheKey,
+} from 'src/common/utils/get-cache-key';
 import UpdateCompanyDto from 'src/companies/dtos/update-company.dto';
 import { CompaniesService } from 'src/companies/services/companies/companies.service';
 import { I18nTranslations } from 'src/generated/i18n.generated';
@@ -14,6 +20,8 @@ import CreateProductDto from 'src/products/dtos/create-product.dto';
 import FindAllProductsQueryDto from 'src/products/dtos/find-all-query.dto';
 import Product from 'src/products/entities/product.entity';
 import { Repository } from 'typeorm';
+import { Cache } from 'cache-manager';
+import { FOUR_MINUTES } from 'src/common/constants';
 
 @Injectable()
 export class ProductsService {
@@ -23,6 +31,7 @@ export class ProductsService {
     private readonly companiesService: CompaniesService,
     private readonly i18n: I18nService<I18nTranslations>,
     private readonly categoriesService: CategoriesService,
+    @Inject(CACHE_MANAGER) private cache: Cache,
   ) {}
 
   async findAll({
@@ -35,6 +44,23 @@ export class ProductsService {
     page = 0,
     orderByType,
   }: FindAllProductsQueryDto): Promise<Product[]> {
+    const cacheKey = getProductsCacheKey({
+      orderByType,
+      orderBy,
+      limit,
+      page,
+      minPrice,
+      maxPrice,
+      categoryId,
+      lastCategories,
+    });
+
+    const cachedProducts = await this.cache.get<Product[]>(cacheKey);
+
+    if (cachedProducts) {
+      return cachedProducts;
+    }
+
     const products = this.productsRepo
       .createQueryBuilder('product')
       .where('product.price BETWEEN :minPrice AND :maxPrice', {
@@ -76,11 +102,22 @@ export class ProductsService {
       );
     }
 
-    return products.getMany();
+    const productsFromDb = await products.getMany();
+
+    this.cache.set(cacheKey, productsFromDb, FOUR_MINUTES);
+
+    return productsFromDb;
   }
 
   // TODO: fix i18n message
   async findById(productId: number): Promise<Product> {
+    const cacheKey = getProductCacheKey(productId);
+
+    const cachedProduct = await this.cache.get<Product>(cacheKey);
+    if (cachedProduct) {
+      return cachedProduct;
+    }
+
     const product = await this.productsRepo.findOne({
       where: {
         id: productId,
@@ -96,6 +133,8 @@ export class ProductsService {
         this.i18n.t('messages.no_rows_updated', I18nContext.current()),
       );
     }
+
+    this.cache.set(cacheKey, product, FOUR_MINUTES);
 
     return product;
   }

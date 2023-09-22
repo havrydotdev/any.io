@@ -10,12 +10,16 @@ const getProductsCacheKey = (query: FindAllProductsQueryDto): string => {
   }${query.lastCategories.toString()}`;
 };
 
-const getProductCacheKey = (userId: number, productId: number): string => {
-  return `p${userId}${productId}`;
+const getProductCacheKey = (productId: number): string => {
+  return `p${productId}`;
 };
 
 const getReviewsCacheKey = (query: FindAllReviewsQueryDto): string => {
-  return `r${query.limit}${query.orderBy}${query.orderByType}${query.page}${query.productId}`;
+  return `rs${query.limit}${query.orderBy}${query.orderByType}${query.page}${query.productId}`;
+};
+
+const getReviewCacheKey = (reviewId: number): string => {
+  return `r${reviewId}`;
 };
 
 const getOrdersCacheKey = (userId: number, query: PaginationDto): string => {
@@ -32,4 +36,5 @@ export {
   getOrderCacheKey,
   getOrdersCacheKey,
   getProductCacheKey,
+  getReviewCacheKey,
 };
