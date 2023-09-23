@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsPhoneNumber } from 'class-validator';
+import { IsOptional, IsPhoneNumber } from 'class-validator';
 import { IsEmailI18n } from 'src/common/decorators/is-email.decorator';
 import { IsNotEmptyI18n } from 'src/common/decorators/is-not-empty.decorator';
 import { IsStringI18n } from 'src/common/decorators/is-string.decorator';
@@ -43,14 +43,17 @@ export default class CreateUserDto {
   @IsNotEmptyI18n()
   name: string;
 
+  @IsOptional()
   @IsStringI18n()
   @IsNotEmptyI18n()
   lastname: string;
 
+  @IsOptional()
   @IsStringI18n()
   @IsNotEmptyI18n()
   patronymic: string;
 
+  @IsOptional()
   @IsStringI18n()
   @IsNotEmptyI18n()
   @IsPhoneNumber('UA')

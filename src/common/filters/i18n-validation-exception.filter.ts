@@ -4,7 +4,7 @@ import {
   ExceptionFilter,
   ValidationError,
 } from '@nestjs/common';
-import iterate from 'iterate';
+import iterate from 'iterare';
 import {
   I18nContext,
   I18nValidationException,

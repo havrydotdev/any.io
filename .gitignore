@@ -35,7 +35,7 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # secrets
-.env.local
+.env
 
 # SQLite
 dev.sqlite

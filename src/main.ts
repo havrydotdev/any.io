@@ -20,13 +20,20 @@ async function bootstrap(): Promise<void> {
     new FastifyAdapter(),
   );
 
-  await app.register(fastifyCookie, {
-    secret: 'my-secret', // for cookies signature
-  });
-
   app.useGlobalFilters(...filters);
 
-  const config: ConfigService = app.get<ConfigService>(ConfigService);
+  app.setGlobalPrefix('api/v1');
+
+  // TODO: Delete this when deployed
+  app.enableCors({
+    origin: '*',
+  });
+
+  const config = app.get<ConfigService>(ConfigService);
+
+  await app.register(fastifyCookie, {
+    secret: config.get('COOKIES_SECRET'), // for cookies signature
+  });
 
   await app.listen(config.get('PORT') ?? 3000);
 }

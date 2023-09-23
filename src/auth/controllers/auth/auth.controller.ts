@@ -1,9 +1,17 @@
-import { Body, Controller, Get, HttpCode, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Req,
+  Res,
+} from '@nestjs/common';
 import LoginUserDto from '../../dtos/login-user.dto';
 import SignUserDto from '../../dtos/sign-user.dto';
 import { Public } from '../../../common/decorators/is-public.decorator';
 import CreateUserDto from '../../../users/dto/create-user.dto';
-import { FastifyRequest } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import {
   ApiInternalServerErrorResponse,
   ApiOkResponse,
@@ -33,22 +41,19 @@ export class AuthController {
     description: 'Incorrect user`s credentials',
   })
   @ApiOkResponse({
-    type: () =>
-      IResponse<{
-        access_token: number;
-      }>,
+    type: () => IResponse<undefined>,
     description: 'User logged in',
   })
-  async login(@Body() reqBody: LoginUserDto): Promise<
-    IResponse<{
-      access_token: string;
-    }>
-  > {
+  async login(
+    @Body() reqBody: LoginUserDto,
+    @Res({ passthrough: true }) res: FastifyReply,
+  ): Promise<IResponse<undefined>> {
     const token = await this.authService.login(reqBody);
 
-    return new IResponse({
-      access_token: token,
-    });
+    // TODO: add hashing for all cookies and expiration date
+    res.setCookie('any.io_auth_token', token);
+
+    return new IResponse(undefined);
   }
 
   @Public()

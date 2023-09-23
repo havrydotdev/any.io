@@ -13,6 +13,8 @@ import { CategoriesModule } from './categories/categories.module';
 import typeOrmConfig from './common/configs/typeorm.config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { OrdersModule } from './orders/orders.module';
+import { DiscountsModule } from './discounts/discounts.module';
+import { ImagesModule } from './images/images.module';
 import i18nConfig from './common/configs/i18n.config';
 
 @Module({
@@ -21,6 +23,7 @@ import i18nConfig from './common/configs/i18n.config';
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync(typeOrmConfig),
+    // TODO: add polish language
     I18nModule.forRootAsync(i18nConfig),
     AuthModule,
     UsersModule,
@@ -32,6 +35,8 @@ import i18nConfig from './common/configs/i18n.config';
     ReviewsModule,
     CategoriesModule,
     OrdersModule,
+    DiscountsModule,
+    ImagesModule,
   ],
 })
 export class AppModule {}

@@ -17,9 +17,6 @@ export default class Product extends IEntity {
   })
   price: number;
 
-  // @Column()
-  // image: string;
-
   // @Column({ type: 'array' })
   // tags: string[];
 
