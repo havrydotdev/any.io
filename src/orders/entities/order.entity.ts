@@ -13,6 +13,12 @@ export default class Order extends IEntity {
   })
   warehouse: string;
 
+  @Column({
+    type: 'float',
+    nullable: false,
+  })
+  total: number;
+
   @ManyToOne(() => User, (user) => user.orders)
   user: User;
 

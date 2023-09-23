@@ -100,6 +100,19 @@ export class ProductsController {
     });
   }
 
+  @Get(':id')
+  async findById(@Param('id', ParseIntPipe) id: number): Promise<
+    IResponse<{
+      product: Product;
+    }>
+  > {
+    const product: Product = await this.productsService.findById(id);
+
+    return new IResponse({
+      product,
+    });
+  }
+
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,

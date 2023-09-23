@@ -12,19 +12,25 @@ import {
 import { I18nTranslations } from 'src/generated/i18n.generated';
 import CreateOrderDto from 'src/orders/dtos/create-order.dto';
 import Order from 'src/orders/entities/order.entity';
+import { ProductsService } from 'src/products/services/products/products.service';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectRepository(Order) private readonly ordersRepo: Repository<Order>,
+    private readonly productsService: ProductsService,
     private readonly i18n: I18nService<I18nTranslations>,
     @Inject(CACHE_MANAGER) private readonly cache: Cache,
   ) {}
 
+  // TODO: Update i18n messages
   async create(createDto: CreateOrderDto): Promise<number> {
+    const total = await this.productsService.getTotalPrice(createDto.products);
+
     const res = await this.ordersRepo.insert({
       ...createDto,
+      total,
       user: {
         id: createDto.userId,
       },

@@ -67,9 +67,7 @@ export class ProductsService {
         minPrice: minPrice,
         maxPrice: maxPrice,
       })
-      .leftJoinAndSelect('product.category', 'category')
-      .take(limit)
-      .offset(limit * page);
+      .leftJoinAndSelect('product.category', 'category');
 
     if (categoryId) {
       const category = await this.categoriesService.findById(categoryId);
@@ -102,7 +100,10 @@ export class ProductsService {
       );
     }
 
-    const productsFromDb = await products.getMany();
+    const productsFromDb = await products
+      .limit(limit)
+      .offset(limit * page)
+      .getMany();
 
     this.cache.set(cacheKey, productsFromDb, FOUR_MINUTES);
 
@@ -229,5 +230,17 @@ export class ProductsService {
     await this.productsRepo.delete({
       id: productId,
     });
+  }
+
+  async getTotalPrice(products: number[]): Promise<number> {
+    const { total } = await this.productsRepo
+      .createQueryBuilder('product')
+      .select('SUM(product.price)', 'total')
+      .where('product.id IN (:...products)', {
+        products,
+      })
+      .getRawOne();
+
+    return total as number;
   }
 }
