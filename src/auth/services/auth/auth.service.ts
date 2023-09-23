@@ -14,6 +14,7 @@ import IHashingService from 'src/hashing/interfaces/hashing-service.interface';
 import { I18nTranslations } from 'src/generated/i18n.generated';
 import IAuthService from 'src/auth/interfaces/auth-service.interface';
 
+// TODO: add google and facebook oauth
 @Injectable()
 export class AuthService implements IAuthService {
   private readonly logger = new Logger(IAuthService.name);
