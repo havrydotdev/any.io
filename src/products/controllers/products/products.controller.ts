@@ -11,6 +11,8 @@ import {
   Query,
   Req,
   Res,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { I18n, I18nContext } from 'nestjs-i18n';
@@ -24,6 +26,7 @@ import CreateProductDto from 'src/products/dtos/create-product.dto';
 import Product from 'src/products/entities/product.entity';
 import { ProductsService } from 'src/products/services/products/products.service';
 import UpdateProductDto from 'src/products/dtos/update-product.dto';
+import { FastifyFileInterceptor } from 'src/common/interceptors/fastify-file.interceptor';
 
 @Controller('products')
 export class ProductsController {
@@ -82,8 +85,10 @@ export class ProductsController {
   }
 
   @Post()
+  @UseInterceptors(FastifyFileInterceptor('image'))
   async create(
     @Req() req: FastifyRequest,
+    @UploadedFile() image: Express.Multer.File,
     @Body() createDto: CreateProductDto,
   ): Promise<
     IResponse<{
@@ -93,6 +98,7 @@ export class ProductsController {
     const productId: number = await this.productsService.create(
       req.user.id,
       createDto,
+      image,
     );
 
     return new IResponse({

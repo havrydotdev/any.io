@@ -5,6 +5,7 @@ import Image from './entities/image.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Image])],
+  exports: [ImagesService],
   providers: [ImagesService],
 })
 export class ImagesModule {}

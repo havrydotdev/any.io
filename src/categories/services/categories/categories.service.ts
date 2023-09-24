@@ -57,4 +57,16 @@ export class CategoriesService {
     const res = await this.categoriesRepo.insert(createDto);
     return res.generatedMaps[0].id as number;
   }
+
+  async doesCategoryExist(categoryId: number): Promise<Category> {
+    const category = await this.findById(categoryId);
+
+    if (!category) {
+      throw new BadRequestException(
+        this.i18n.t('messages.category_does_not_exist', I18nContext.current()),
+      );
+    }
+
+    return category;
+  }
 }

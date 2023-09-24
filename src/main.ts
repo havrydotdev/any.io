@@ -8,6 +8,7 @@ import { I18nValidationExceptionFilter } from './common/filters/i18n-validation-
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ConfigService } from './config/services/config/config.service';
 import fastifyCookie from '@fastify/cookie';
+import { contentParser } from 'fastify-multer';
 
 const filters = [
   new HttpExceptionFilter(),
@@ -29,12 +30,14 @@ async function bootstrap(): Promise<void> {
     origin: '*',
   });
 
-  const config = app.get<ConfigService>(ConfigService);
+  const configService = app.get<ConfigService>(ConfigService);
 
   await app.register(fastifyCookie, {
-    secret: config.get('COOKIES_SECRET'), // for cookies signature
+    secret: configService.get('COOKIES_SECRET'), // for cookies signature
   });
 
-  await app.listen(config.get('PORT') ?? 3000);
+  await app.register(contentParser);
+
+  await app.listen(configService.get('PORT') ?? 3000);
 }
 bootstrap();

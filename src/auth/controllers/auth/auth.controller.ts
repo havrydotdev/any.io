@@ -51,7 +51,9 @@ export class AuthController {
     const token = await this.authService.login(reqBody);
 
     // TODO: add hashing for all cookies and expiration date
-    res.setCookie('any.io_auth_token', token);
+    res.setCookie('any.io_auth_token', token, {
+      path: '/',
+    });
 
     return new IResponse(undefined);
   }

@@ -101,4 +101,34 @@ export class CompaniesService {
       id: companyId,
     });
   }
+
+  async doesUserOwnCompany(
+    userId: number,
+    companyId: number,
+  ): Promise<Company> {
+    const company = await this.findByUserId(userId);
+
+    if (!company || company.id !== companyId) {
+      throw new ForbiddenException(
+        this.i18n.t(
+          'messages.user_does_not_own_company',
+          I18nContext.current(),
+        ),
+      );
+    }
+
+    return company;
+  }
+
+  async doesUserCompanyExist(userId: number): Promise<Company> {
+    const company = await this.findByUserId(userId);
+
+    if (!company) {
+      throw new BadRequestException(
+        this.i18n.t('messages.no_rows_updated', I18nContext.current()),
+      );
+    }
+
+    return company;
+  }
 }

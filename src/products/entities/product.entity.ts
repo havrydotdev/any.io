@@ -1,8 +1,17 @@
 import Category from 'src/categories/entities/category.entity';
 import IEntity from 'src/common/entities/base.entity';
 import Company from 'src/companies/entities/company.entity';
+import Discount from 'src/discounts/entities/discount.entity';
+import Image from 'src/images/entities/image.entity';
 import Review from 'src/reviews/entities/review.entity';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 
 @Entity('products')
 export default class Product extends IEntity {
@@ -17,9 +26,6 @@ export default class Product extends IEntity {
   })
   price: number;
 
-  // @Column({ type: 'array' })
-  // tags: string[];
-
   @ManyToOne(() => Company, (company) => company.products)
   company: Company;
 
@@ -28,4 +34,11 @@ export default class Product extends IEntity {
 
   @ManyToOne(() => Category, (category) => category.products)
   category: Category;
+
+  @OneToOne(() => Image)
+  @JoinColumn()
+  image: Image;
+
+  @OneToOne(() => Discount, (discount) => discount.product)
+  discount: Discount;
 }

@@ -10,6 +10,12 @@ export default class Category extends IEntity {
   })
   title: string;
 
+  @Column({
+    unique: true,
+    name: 'title_uk',
+  })
+  titleUk: string;
+
   @OneToMany(() => Product, (product) => product.category)
   products: Product[];
 }

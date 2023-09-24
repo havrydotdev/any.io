@@ -4,7 +4,6 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nContext, I18nService } from 'nestjs-i18n';
@@ -22,6 +21,7 @@ import Product from 'src/products/entities/product.entity';
 import { Repository } from 'typeorm';
 import { Cache } from 'cache-manager';
 import { FOUR_MINUTES } from 'src/common/constants';
+import { ImagesService } from 'src/images/services/images/images.service';
 
 @Injectable()
 export class ProductsService {
@@ -29,8 +29,9 @@ export class ProductsService {
     @InjectRepository(Product)
     private readonly productsRepo: Repository<Product>,
     private readonly companiesService: CompaniesService,
-    private readonly i18n: I18nService<I18nTranslations>,
     private readonly categoriesService: CategoriesService,
+    private readonly imagesService: ImagesService,
+    private readonly i18n: I18nService<I18nTranslations>,
     @Inject(CACHE_MANAGER) private cache: Cache,
   ) {}
 
@@ -70,15 +71,7 @@ export class ProductsService {
       .leftJoinAndSelect('product.category', 'category');
 
     if (categoryId) {
-      const category = await this.categoriesService.findById(categoryId);
-      if (!category) {
-        throw new BadRequestException(
-          this.i18n.t(
-            'messages.category_does_not_exist',
-            I18nContext.current(),
-          ),
-        );
-      }
+      await this.categoriesService.doesCategoryExist(categoryId);
 
       products.andWhere('category.id = :categoryId', {
         categoryId,
@@ -140,22 +133,19 @@ export class ProductsService {
     return product;
   }
 
-  async create(userId: number, createDto: CreateProductDto): Promise<number> {
-    const company = await this.companiesService.findByUserId(userId);
-    if (!company) {
-      throw new BadRequestException(
-        this.i18n.t('messages.user_company_is_null', I18nContext.current()),
-      );
-    }
+  async create(
+    userId: number,
+    createDto: CreateProductDto,
+    file: Express.Multer.File,
+  ): Promise<number> {
+    const company = await this.companiesService.doesUserCompanyExist(userId);
 
-    const category = await this.categoriesService.findById(
-      createDto.categoryId,
+    await this.categoriesService.doesCategoryExist(createDto.categoryId);
+
+    const imageId = await this.imagesService.uploadPublicFile(
+      file.buffer,
+      file.originalname,
     );
-    if (!category) {
-      throw new BadRequestException(
-        this.i18n.t('messages.category_does_not_exist', I18nContext.current()),
-      );
-    }
 
     const res = await this.productsRepo.insert({
       ...createDto,
@@ -164,6 +154,9 @@ export class ProductsService {
       },
       category: {
         id: createDto.categoryId,
+      },
+      image: {
+        id: imageId,
       },
     });
 
@@ -176,23 +169,9 @@ export class ProductsService {
     productId: number,
     updateDto: UpdateCompanyDto,
   ): Promise<void> {
-    const product = await this.findById(productId);
-    if (!product) {
-      throw new BadRequestException(
-        this.i18n.t('messages.no_rows_updated', I18nContext.current()),
-      );
-    }
+    const product = await this.doesProductExist(productId);
 
-    const company = await this.companiesService.findById(product.company.id);
-
-    if (!company || company.user.id !== userId) {
-      throw new UnauthorizedException(
-        this.i18n.t(
-          'messages.user_does_not_own_company',
-          I18nContext.current(),
-        ),
-      );
-    }
+    await this.companiesService.doesUserOwnCompany(userId, product.company.id);
 
     const res = await this.productsRepo.update(
       {
@@ -210,22 +189,9 @@ export class ProductsService {
 
   // TODO: Fix i18n message
   async delete(userId: number, productId: number): Promise<void> {
-    const product = await this.findById(productId);
-    if (!product) {
-      throw new BadRequestException(
-        this.i18n.t('messages.no_rows_updated', I18nContext.current()),
-      );
-    }
+    const product = await this.doesProductExist(productId);
 
-    const company = await this.companiesService.findByUserId(userId);
-    if (company.user.id !== userId) {
-      throw new UnauthorizedException(
-        this.i18n.t(
-          'messages.user_does_not_own_company',
-          I18nContext.current(),
-        ),
-      );
-    }
+    await this.companiesService.doesUserOwnCompany(userId, product.company.id);
 
     await this.productsRepo.delete({
       id: productId,
@@ -242,5 +208,17 @@ export class ProductsService {
       .getRawOne();
 
     return total as number;
+  }
+
+  async doesProductExist(productId: number): Promise<Product> {
+    const product = await this.findById(productId);
+
+    if (!product) {
+      throw new BadRequestException(
+        this.i18n.t('messages.no_rows_updated', I18nContext.current()),
+      );
+    }
+
+    return product;
   }
 }
