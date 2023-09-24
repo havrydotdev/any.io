@@ -18,6 +18,12 @@ export default class Product extends IEntity {
   @Column()
   title: string;
 
+  @Column({
+    name: 'title_uk',
+    nullable: true,
+  })
+  titleUk: string;
+
   @Column()
   description: string;
 

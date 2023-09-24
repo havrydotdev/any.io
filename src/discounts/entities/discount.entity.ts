@@ -4,7 +4,9 @@ import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 @Entity()
 class Discount extends IEntity {
-  @Column()
+  @Column({
+    name: 'expires_at',
+  })
   expiresAt: Date;
 
   @Column()

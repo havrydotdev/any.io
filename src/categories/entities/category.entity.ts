@@ -12,6 +12,7 @@ export default class Category extends IEntity {
 
   @Column({
     unique: true,
+    nullable: true,
     name: 'title_uk',
   })
   titleUk: string;

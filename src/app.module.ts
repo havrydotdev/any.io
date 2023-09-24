@@ -16,6 +16,7 @@ import { OrdersModule } from './orders/orders.module';
 import { DiscountsModule } from './discounts/discounts.module';
 import { ImagesModule } from './images/images.module';
 import i18nConfig from './common/configs/i18n.config';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import i18nConfig from './common/configs/i18n.config';
     TypeOrmModule.forRootAsync(typeOrmConfig),
     // TODO: add polish language
     I18nModule.forRootAsync(i18nConfig),
+    ScheduleModule.forRoot(),
     AuthModule,
     UsersModule,
     ConfigModule,
