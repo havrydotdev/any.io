@@ -15,6 +15,7 @@ import Order from 'src/orders/entities/order.entity';
 import { ProductsService } from 'src/products/services/products/products.service';
 import { Repository } from 'typeorm';
 
+// TODO: Add endpoint to get last products bought
 @Injectable()
 export class OrdersService {
   constructor(

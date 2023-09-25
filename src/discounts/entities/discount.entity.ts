@@ -2,7 +2,7 @@ import IEntity from 'src/common/entities/base.entity';
 import Product from 'src/products/entities/product.entity';
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
-@Entity()
+@Entity('discounts')
 class Discount extends IEntity {
   @Column({
     name: 'expires_at',

@@ -105,6 +105,7 @@ export class ProductsService {
   }
 
   // TODO: fix i18n message
+  // TODO: store last visited products in cookies or in db in logged in
   async findById(productId: number): Promise<Product> {
     const cacheKey = getProductCacheKey(productId);
 

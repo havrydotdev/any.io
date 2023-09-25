@@ -3,7 +3,7 @@ import Product from 'src/products/entities/product.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 
-@Entity()
+@Entity('orders')
 export default class Order extends IEntity {
   @Column()
   comment: string;
