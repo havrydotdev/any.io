@@ -68,7 +68,8 @@ export class ProductsService {
         minPrice: minPrice,
         maxPrice: maxPrice,
       })
-      .leftJoinAndSelect('product.category', 'category');
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.discount', 'discount');
 
     if (categoryId) {
       await this.categoriesService.doesCategoryExist(categoryId);
@@ -119,6 +120,7 @@ export class ProductsService {
       relations: {
         company: true,
         category: true,
+        discount: true,
       },
     });
 
