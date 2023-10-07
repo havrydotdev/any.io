@@ -1,14 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
 import { I18nValidationExceptionFilter } from './common/filters/i18n-validation-exception.filter';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ConfigService } from './config/services/config/config.service';
 import fastifyCookie from '@fastify/cookie';
 import { contentParser } from 'fastify-multer';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
 
 const filters = [
   new HttpExceptionFilter(),

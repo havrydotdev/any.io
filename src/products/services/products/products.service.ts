@@ -69,7 +69,8 @@ export class ProductsService {
         maxPrice: maxPrice,
       })
       .leftJoinAndSelect('product.category', 'category')
-      .leftJoinAndSelect('product.discount', 'discount');
+      .leftJoinAndSelect('product.discount', 'discount')
+      .leftJoinAndSelect('product.image', 'image');
 
     if (categoryId) {
       await this.categoriesService.doesCategoryExist(categoryId);

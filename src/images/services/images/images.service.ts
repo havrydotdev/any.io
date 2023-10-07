@@ -17,7 +17,7 @@ export class ImagesService {
     private readonly configService: IConfigService,
   ) {
     this._s3Config = {
-      accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
+      accessKeyId: configService.get('AWS_ACCESS_KEY'),
       secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
       region: configService.get('AWS_REGION'),
       apiVersion: '2010-12-01',
