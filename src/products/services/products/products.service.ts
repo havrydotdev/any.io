@@ -18,7 +18,7 @@ import { I18nTranslations } from 'src/generated/i18n.generated';
 import CreateProductDto from 'src/products/dtos/create-product.dto';
 import FindAllProductsQueryDto from 'src/products/dtos/find-all-query.dto';
 import Product from 'src/products/entities/product.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Cache } from 'cache-manager';
 import { FOUR_MINUTES } from 'src/common/constants';
 import { ImagesService } from 'src/images/services/images/images.service';
@@ -43,7 +43,7 @@ export class ProductsService {
     categoryId,
     lastCategories,
     page = 0,
-    orderByType,
+    orderByType = 'asc',
   }: FindAllProductsQueryDto): Promise<Product[]> {
     const cacheKey = getProductsCacheKey({
       orderByType,
@@ -106,8 +106,9 @@ export class ProductsService {
   }
 
   // TODO: fix i18n message
-  // TODO: store last visited products in cookies or in db in logged in
   async findById(productId: number): Promise<Product> {
+    await this.incrementDailyViews(productId);
+
     const cacheKey = getProductCacheKey(productId);
 
     const cachedProduct = await this.cache.get<Product>(cacheKey);
@@ -135,6 +136,16 @@ export class ProductsService {
     this.cache.set(cacheKey, product, FOUR_MINUTES);
 
     return product;
+  }
+
+  async findLast(lastProducts: number[]): Promise<Product[]> {
+    const products = await this.productsRepo.find({
+      where: {
+        id: In(lastProducts),
+      },
+    });
+
+    return products;
   }
 
   async create(
@@ -224,5 +235,19 @@ export class ProductsService {
     }
 
     return product;
+  }
+
+  async incrementDailyViews(productId: number): Promise<void> {
+    const product = await this.doesProductExist(productId);
+
+    await this.productsRepo.update(
+      {
+        id: productId,
+      },
+      {
+        dailyViews: product.dailyViews + 1,
+        views: product.views + 1,
+      },
+    );
   }
 }

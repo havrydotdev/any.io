@@ -17,6 +17,9 @@ import { DiscountsModule } from './discounts/discounts.module';
 import { ImagesModule } from './images/images.module';
 import i18nConfig from './common/configs/i18n.config';
 import { ScheduleModule } from '@nestjs/schedule';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { SchedulesModule } from './schedules/schedules.module';
+import { AdsModule } from './ads/ads.module';
 
 @Module({
   imports: [
@@ -39,6 +42,9 @@ import { ScheduleModule } from '@nestjs/schedule';
     OrdersModule,
     DiscountsModule,
     ImagesModule,
+    AnalyticsModule,
+    SchedulesModule,
+    AdsModule,
   ],
 })
 export class AppModule {}

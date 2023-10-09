@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import Company from 'src/companies/entities/company.entity';
@@ -20,15 +19,6 @@ export class DiscountsService {
     private readonly companiesService: CompaniesService,
     private readonly i18n: I18nService<I18nTranslations>,
   ) {}
-
-  @Cron('0 0 * * *')
-  async updateDiscounts() {
-    await this.discountsRepo
-      .createQueryBuilder('discount')
-      .delete()
-      .where('discount.expires_at <= :date', { date: new Date() })
-      .execute();
-  }
 
   async create(userId: number, createDto: CreateDiscountDto): Promise<number> {
     const [product] = await this.doesUserHavePermsToAddDiscount(

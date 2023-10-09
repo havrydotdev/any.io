@@ -1,3 +1,4 @@
+import Analytics from 'src/analytics/entities/analytics.entity';
 import Category from 'src/categories/entities/category.entity';
 import IEntity from 'src/common/entities/base.entity';
 import Company from 'src/companies/entities/company.entity';
@@ -32,6 +33,19 @@ export default class Product extends IEntity {
   })
   price: number;
 
+  @Column({
+    name: 'daily_views',
+    nullable: false,
+    default: 0,
+  })
+  dailyViews: number;
+
+  @Column({
+    nullable: false,
+    default: 0,
+  })
+  views: number;
+
   @ManyToOne(() => Company, (company) => company.products)
   company: Company;
 
@@ -47,4 +61,7 @@ export default class Product extends IEntity {
 
   @OneToOne(() => Discount, (discount) => discount.product)
   discount: Discount;
+
+  @OneToMany(() => Analytics, (analytics) => analytics.product)
+  analytics: Analytics[];
 }

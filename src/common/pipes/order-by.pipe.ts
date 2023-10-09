@@ -9,7 +9,7 @@ export default class OrderByPipe implements PipeTransform {
   transform(value: any) {
     if (!value) return value;
 
-    if (!['price', 'title', 'id'].includes(value)) {
+    if (!['price', 'title', 'id', 'daily_views'].includes(value)) {
       throw new BadRequestException(
         this.i18n.t('messages.invalid_order_by', I18nContext.current()),
       );

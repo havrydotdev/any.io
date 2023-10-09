@@ -107,15 +107,55 @@ export class ProductsController {
   }
 
   @Get(':id')
-  async findById(@Param('id', ParseIntPipe) id: number): Promise<
+  async findById(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) res: FastifyReply,
+    @Param('id', ParseIntPipe) id: number,
+    @I18n() i18n: I18nContext<I18nTranslations>,
+  ): Promise<
     IResponse<{
       product: Product;
     }>
   > {
+    const lastProducts: number[] = JSON.parse(
+      req.cookies['last_products'] || '[]',
+    ).map((category: string) => parseInt(category));
+
+    try {
+      res.setCookie(
+        'last_products',
+        JSON.stringify([id, ...lastProducts].slice(0, 5)),
+      );
+    } catch (error) {
+      res.setCookie('last_products', '[]');
+      throw new InternalServerErrorException(
+        i18n.t('messages.invalid_cookies_error'),
+      );
+    }
+
     const product: Product = await this.productsService.findById(id);
 
     return new IResponse({
       product,
+    });
+  }
+
+  @Public()
+  @Get('last')
+  async findLastProducts(@Req() req: FastifyRequest): Promise<
+    IResponse<{
+      products: Product[];
+    }>
+  > {
+    const lastProducts: number[] = JSON.parse(
+      req.cookies['last_products'] || '[]',
+    ).map((category: string) => parseInt(category));
+
+    const products: Product[] =
+      await this.productsService.findLast(lastProducts);
+
+    return new IResponse({
+      products,
     });
   }
 
